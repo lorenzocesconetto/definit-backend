@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// @TechDebt: Create a generic model so others can inherit from
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Blockchain {
+  id                         Int      @id
+  name                       String
+  nativeTokenSymbol          String   @map("native_token_symbol")
+  nativeTokenName            String   @map("native_token_name")
+  uniswapNativeTokenContract String   @map("uniswap_native_token_contract")
+  Pool                       Pool[]
+  imageUrl                   String   @map("image_url")
+  designRating               String   @map("design_rating") // @TechDebt: All ratings should be an Enum
+  designDescription          String[] @map("design_description")
+  reliabilityRating          String   @map("reliability_rating") // @TechDebt: All ratings should be an Enum
+  reliabilityDescription     String[] @map("reliability_description")
+
+  @@map("blockchains")
+}
+
+model Protocol {
+  id                                   Int      @id
+  name                                 String
+  imageUrl                             String   @map("image_url")
+  Pool                                 Pool[]
+  codeQualityRating                    String   @map("code_quality_rating") // @TechDebt: All ratings should be an Enum
+  codeQualityDescription               String[] @map("code_quality_description")
+  maturityRating                       String   @map("maturity_rating") // @TechDebt: All ratings should be an Enum
+  maturityDescription                  String[] @map("maturity_description")
+  designRating                         String   @map("design_rating") // @TechDebt: All ratings should be an Enum
+  designDescription                    String[] @map("design_description")
+  collateralizationLeverageRating      String   @map("collateralization_leverage_rating") // @TechDebt: All ratings should be an Enum
+  collateralizationLeverageDescription String[] @map("collateralization_leverage_description")
+
+  @@map("protocols")
+}
+
+model Token {
+  id                    Int      @id
+  name                  String
+  symbol                String
+  strengthRating        String   @map("strength_rating")
+  strengthDescription   String[] @map("strength_description")
+  volatilityRating      String   @map("volatility_rating") // @TechDebt: All ratings should be an Enum
+  volatilityDescription String[] @map("volatility_description")
+  tokens0               Pool[]   @relation("token0")
+  tokens1               Pool[]   @relation("token1")
+
+  @@map("tokens")
+}
+
+model Pool {
+  id                         Int        @id @default(autoincrement())
+  name                       String
+  description                String
+  // Immutables
+  address                    String
+  blockchainId               Int        @map("blockchain_id")
+  blockchain                 Blockchain @relation(fields: [blockchainId], references: [id])
+  protocolId                 Int        @map("protocol_id")
+  protocol                   Protocol   @relation(fields: [protocolId], references: [id])
+  factory                    String
+  token0Id                   Int        @map("token_0_id")
+  token0                     Token      @relation("token0", fields: [token0Id], references: [id])
+  token1Id                   Int        @map("token_1_id")
+  token1                     Token      @relation("token1", fields: [token1Id], references: [id])
+  token0Address              String     @map("token_0_address")
+  token1Address              String     @map("token_1_address")
+  fee                        Decimal
+  tickSpacing                Decimal    @map("tick_spacing")
+  // Overall Risk
+  overallRiskRating          String     @map("overall_risk_rating")
+  fundamentalsRiskRating     String     @map("fundamentals_risk_rating")
+  economicsRiskRating        String     @map("economics_risk_rating")
+  // Impermanent Loss Risk
+  impermanentLossRating      String     @map("impermanent_loss_rating") // @TechDebt: All ratings should be an Enum
+  impermanentLossDescription String[]   @map("impermanent_loss_description")
+  // Yield Risk
+  yieldOutlookRating         String     @map("yield_outlook_rating") // @TechDebt: All ratings should be an Enum
+  yieldOutlookDescription    String[]   @map("yield_outlook_description")
+
+  @@map("pools")
+}
