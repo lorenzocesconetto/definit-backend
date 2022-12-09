@@ -1,4 +1,9 @@
 import { PrismaClient, Prisma } from "@prisma/client";
+import {
+    ARBITRUM_BLOCKCHAIN_ID,
+    ETHEREUM_BLOCKCHAIN_ID,
+    POLYGON_BLOCKCHAIN_ID,
+} from "../src/utils/constants";
 
 const prisma = new PrismaClient();
 
@@ -61,7 +66,7 @@ const tokenData: Prisma.TokenCreateInput[] = [
 
 const blockchainData: Prisma.BlockchainCreateInput[] = [
     {
-        id: 1,
+        id: ETHEREUM_BLOCKCHAIN_ID,
         name: "Ethereum",
         nativeTokenName: "Ether",
         nativeTokenSymbol: "ETH",
@@ -81,12 +86,11 @@ const blockchainData: Prisma.BlockchainCreateInput[] = [
             "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
     },
     {
-        id: 42161,
+        id: ARBITRUM_BLOCKCHAIN_ID,
         name: "Arbitrum",
         nativeTokenName: "Wrapped Ether",
         nativeTokenSymbol: "WETH",
-        imageUrl:
-            "https://ethjobs.net/images/logo-eb576c2af423af6250604be82270a66f.png?vsn=d",
+        imageUrl: "https://developer.arbitrum.io/img/favicon.ico",
         designRating: "A",
         designDescription: [
             "Highly decentralized with over 600k miners securing the chain, making it resilient to censorship and attacks",
@@ -94,7 +98,7 @@ const blockchainData: Prisma.BlockchainCreateInput[] = [
             "Chain ranks top 10 in total value invested",
             "Arbitrum is an Ethereum Layer 2 that makes Ethereum more scalable while building on top of Ethereum's economic security and decentralization",
         ],
-        reliabilityRating: "",
+        reliabilityRating: "C",
         reliabilityDescription: [
             "Chain had at least one halt in the last 12 months",
         ],
@@ -102,12 +106,12 @@ const blockchainData: Prisma.BlockchainCreateInput[] = [
             "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
     },
     {
-        id: 137,
+        id: POLYGON_BLOCKCHAIN_ID,
         name: "Polygon",
         nativeTokenName: "Matic",
         nativeTokenSymbol: "MATIC",
         imageUrl:
-            "https://ethjobs.net/images/logo-eb576c2af423af6250604be82270a66f.png?vsn=d",
+            "https://seeklogo.com/images/P/polygon-matic-logo-1DFDA3A3A8-seeklogo.com.png",
         designRating: "",
         designDescription: [
             "Centralized as only 100 validators secure the chain, with moderate likelihood of censorship or attacks",
@@ -115,7 +119,7 @@ const blockchainData: Prisma.BlockchainCreateInput[] = [
             "Chain ranks top 10 in total value invested",
             "Polygon is an Ethereum side-chain, meaning it posts data to the Ethereum chain but relies on its own set of chain validators",
         ],
-        reliabilityRating: "",
+        reliabilityRating: "C",
         reliabilityDescription: [
             "Chain had at least one halt in the last 12 months",
         ],
@@ -246,7 +250,7 @@ const poolData: Prisma.PoolCreateInput[] = [
         address: "0x17c14d2c404d167802b16c450d3c99f88f2c4f4d",
         blockchain: { connect: { id: 42161 } },
         factory: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
-        fee: "3000",
+        fee: 3000,
         protocol: { connect: { id: 1 } },
         tickSpacing: 60,
         token0Address: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",

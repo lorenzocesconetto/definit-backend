@@ -1,20 +1,14 @@
 /* eslint-disable indent */
 import { ethers } from "ethers";
+import {
+    ARBITRUM_BLOCKCHAIN_ID,
+    ETHEREUM_BLOCKCHAIN_ID,
+    POLYGON_BLOCKCHAIN_ID,
+} from "../utils/constants";
 
-// const INFURA_ETHEREUM_URL = process.env.INFURA_ETHEREUM_URL;
-// const INFURA_POLYGON_URL = process.env.INFURA_POLYGON_URL;
-// const INFURA_ARBITRUM_URL = process.env.INFURA_ARBITRUM_URL;
-
-// console.log("INFURA_ETHEREUM_URL", process.env.INFURA_ETHEREUM_URL);
-// console.log("INFURA_POLYGON_URL", process.env.INFURA_POLYGON_URL);
-// console.log("INFURA_ARBITRUM_URL", process.env.INFURA_ARBITRUM_URL);
-
-const INFURA_ETHEREUM_URL =
-    "https://mainnet.infura.io/v3/cd536cadae114c8e8e7f885bc0beb03a";
-const INFURA_POLYGON_URL =
-    "https://polygon-mainnet.infura.io/v3/cd536cadae114c8e8e7f885bc0beb03a";
-const INFURA_ARBITRUM_URL =
-    "https://arbitrum-mainnet.infura.io/v3/cd536cadae114c8e8e7f885bc0beb03a";
+const INFURA_ETHEREUM_URL = process.env.INFURA_ETHEREUM_URL;
+const INFURA_POLYGON_URL = process.env.INFURA_POLYGON_URL;
+const INFURA_ARBITRUM_URL = process.env.INFURA_ARBITRUM_URL;
 
 const ethereumProvider = new ethers.providers.JsonRpcProvider(
     INFURA_ETHEREUM_URL
@@ -30,11 +24,11 @@ const arbitrumProvider = new ethers.providers.JsonRpcProvider(
 
 const getProvider = (chainId: number): ethers.providers.JsonRpcProvider => {
     switch (chainId) {
-        case 1:
+        case ETHEREUM_BLOCKCHAIN_ID:
             return ethereumProvider;
-        case 42161:
+        case ARBITRUM_BLOCKCHAIN_ID:
             return arbitrumProvider;
-        case 137:
+        case POLYGON_BLOCKCHAIN_ID:
             return polygonProvider;
         default:
             throw new Error("Unknown chain");

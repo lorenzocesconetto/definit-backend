@@ -17,10 +17,10 @@ const schema = {
 
 async function routes(fastify: FastifyTypebox): Promise<void> {
     fastify.get("/protocols/:address/price", { schema }, async request => {
-        const poolAddress = request.params.address;
+        const { address } = request.params;
 
         const poolContract = new ethers.Contract(
-            poolAddress,
+            address,
             IUniswapV3PoolABI,
             ethereumProvider
         );

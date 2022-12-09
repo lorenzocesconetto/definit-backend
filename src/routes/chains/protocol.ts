@@ -7,16 +7,14 @@ import { Type } from "@sinclair/typebox";
 import { FastifyTypebox } from "../types";
 
 const schema = {
-    schema: {
-        params: Type.Object({
-            address: Type.String(),
-            chainId: Type.Integer(),
-        }),
-    },
+    params: Type.Object({
+        address: Type.String(),
+        chainId: Type.Integer(),
+    }),
 };
 
 async function routes(fastify: FastifyTypebox) {
-    fastify.get("/protocols/:address", schema, async request => {
+    fastify.get("/protocols/:address", { schema }, async request => {
         const { address: poolAddress, chainId } = request.params;
         const provider = getProvider(chainId);
         const poolContract = new ethers.Contract(

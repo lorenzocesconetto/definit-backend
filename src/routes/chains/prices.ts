@@ -13,16 +13,16 @@ import { FastifyTypebox } from "../types";
 const schema = {
     params: Type.Object({
         address: Type.String(),
-        chainId: Type.Integer(),
+        blockchainId: Type.Integer(),
     }),
 };
 
 async function routes(fastify: FastifyTypebox): Promise<void> {
     fastify.get("/protocols/:address/prices", { schema }, async request => {
-        const { address: poolAddress, chainId } = request.params;
+        const { address, blockchainId } = request.params;
 
         const poolContract = new ethers.Contract(
-            poolAddress,
+            address,
             IUniswapV3PoolABI,
             ethereumProvider
         );
@@ -54,14 +54,14 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
         ]);
 
         const Token0 = new Token(
-            chainId, // ethereum chain id = 3
+            blockchainId, // ethereum chain id = 1
             poolImmutables.token0,
             token0Immutables.decimals,
             token0Immutables.symbol,
             token0Immutables.name
         );
         const Token1 = new Token(
-            chainId, // ethereum chain id = 3
+            blockchainId, // ethereum chain id = 1
             poolImmutables.token1,
             token1Immutables.decimals,
             token1Immutables.symbol,

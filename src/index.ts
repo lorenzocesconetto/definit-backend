@@ -1,35 +1,19 @@
+import * as dotenv from "dotenv"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+dotenv.config();
 import Fastify from "fastify";
 import { routes } from "./routes";
 import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
-import fastifyEnv from "@fastify/env";
+import cors from "@fastify/cors";
 
 const fastify = Fastify().withTypeProvider<TypeBoxTypeProvider>();
 
-const schema = {
-    type: "object",
-    required: ["PORT"],
-    properties: {
-        PORT: {
-            type: "string",
-            default: 3000,
-        },
-    },
-};
-
-const options = {
-    schema,
-    dotenv: true, // will read .env in root folder
-};
-
-fastify.register(fastifyEnv, options).ready(err => {
-    if (err) console.error(err);
-});
+fastify.register(cors, { origin: ["http://localhost:3000"] });
 
 fastify.get("/", {}, () => {
     return { status: "Healthy" };
 });
 
-fastify.register(routes, { prefix: "/api/v1/chains/:chainId" });
+fastify.register(routes, { prefix: "/api/v1" });
 
 fastify.listen({ port: 8000 }, function (err, address) {
     if (err) {

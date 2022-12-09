@@ -76,8 +76,8 @@ model Pool {
   token1                     Token      @relation("token1", fields: [token1Id], references: [id])
   token0Address              String     @map("token_0_address")
   token1Address              String     @map("token_1_address")
-  fee                        Decimal
-  tickSpacing                Decimal    @map("tick_spacing")
+  fee                        Int
+  tickSpacing                Int        @map("tick_spacing")
   // Overall Risk
   overallRiskRating          String     @map("overall_risk_rating")
   fundamentalsRiskRating     String     @map("fundamentals_risk_rating")
