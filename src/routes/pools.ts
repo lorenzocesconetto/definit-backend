@@ -1,5 +1,6 @@
 import { Type } from "@sinclair/typebox";
 import { prisma } from "../providers/prisma";
+import { getTokenBalance } from "../services/getTokenBalance";
 import { FastifyTypebox } from "./types";
 
 const schema = {
@@ -33,7 +34,20 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
                 token1: true,
             },
         });
-        return pool;
+        const [token0Balance, token1Balance] = await Promise.all([
+            getTokenBalance({
+                address: pool.address,
+                tokenAddress: pool.token0Address,
+                blockchainId: pool.blockchainId,
+            }),
+            getTokenBalance({
+                address: pool.address,
+                tokenAddress: pool.token1Address,
+                blockchainId: pool.blockchainId,
+            }),
+        ]);
+
+        return { ...pool, token0Balance, token1Balance };
     });
 }
 

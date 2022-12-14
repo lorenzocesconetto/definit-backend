@@ -8,6 +8,7 @@ import { getBlockchain } from "../../utils/getBlockchain";
 import { getCurrentTimestampInSeconds } from "../../utils/getCurrentTimestamp";
 import { FastifyTypebox } from "../types";
 import { abi } from "@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json";
+import { getPoolImmutables } from "../../services/getPoolImmutables";
 
 const schema = {
     params: Type.Object({
@@ -17,6 +18,14 @@ const schema = {
 };
 
 async function routes(fastify: FastifyTypebox): Promise<void> {
+    fastify.get("/pools/:address/immutables", { schema }, async req => {
+        const { blockchainId, address } = req.params;
+        const provider = getProvider(blockchainId);
+        const contract = new ethers.Contract(address, abi, provider);
+        const data = await getPoolImmutables(contract);
+        return data;
+    });
+
     fastify.get("/pools/:address/state", { schema }, async req => {
         const { blockchainId, address } = req.params;
         const provider = getProvider(blockchainId);
