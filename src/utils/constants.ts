@@ -1,6 +1,7 @@
 interface IBlockchain {
     blockchainId: number;
     subgraphUrl: string;
+    coinGeckoId: string;
 }
 
 const ETHEREUM_BLOCKCHAIN_ID = 1;
@@ -16,14 +17,17 @@ const ARBITRUM_SUBGRAPH_URL =
     "https://api.thegraph.com/subgraphs/name/ianlapham/uniswap-arbitrum-one";
 
 const ETHEREUM_BLOCKCHAIN: IBlockchain = {
+    coinGeckoId: "ethereum",
     blockchainId: ETHEREUM_BLOCKCHAIN_ID,
     subgraphUrl: ETHEREUM_SUBGRAPH_URL,
 };
 const POLYGON_BLOCKCHAIN: IBlockchain = {
+    coinGeckoId: "polygon-pos",
     blockchainId: POLYGON_BLOCKCHAIN_ID,
     subgraphUrl: POLYGON_SUBGRAPH_URL,
 };
 const ARBITRUM_BLOCKCHAIN: IBlockchain = {
+    coinGeckoId: "arbitrum-one",
     blockchainId: ARBITRUM_BLOCKCHAIN_ID,
     subgraphUrl: ARBITRUM_SUBGRAPH_URL,
 };
