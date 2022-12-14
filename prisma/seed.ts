@@ -1,8 +1,8 @@
 import { PrismaClient, Prisma } from "@prisma/client";
 import {
-    ARBITRUM_BLOCKCHAIN_ID,
-    ETHEREUM_BLOCKCHAIN_ID,
-    POLYGON_BLOCKCHAIN_ID,
+    ARBITRUM_BLOCKCHAIN,
+    ETHEREUM_BLOCKCHAIN,
+    POLYGON_BLOCKCHAIN,
 } from "../src/utils/constants";
 
 const prisma = new PrismaClient();
@@ -66,7 +66,7 @@ const tokenData: Prisma.TokenCreateInput[] = [
 
 const blockchainData: Prisma.BlockchainCreateInput[] = [
     {
-        id: ETHEREUM_BLOCKCHAIN_ID,
+        id: ETHEREUM_BLOCKCHAIN.blockchainId,
         name: "Ethereum",
         nativeTokenName: "Ether",
         nativeTokenSymbol: "ETH",
@@ -86,7 +86,7 @@ const blockchainData: Prisma.BlockchainCreateInput[] = [
             "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
     },
     {
-        id: ARBITRUM_BLOCKCHAIN_ID,
+        id: ARBITRUM_BLOCKCHAIN.blockchainId,
         name: "Arbitrum",
         nativeTokenName: "Wrapped Ether",
         nativeTokenSymbol: "WETH",
@@ -106,13 +106,13 @@ const blockchainData: Prisma.BlockchainCreateInput[] = [
             "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
     },
     {
-        id: POLYGON_BLOCKCHAIN_ID,
+        id: POLYGON_BLOCKCHAIN.blockchainId,
         name: "Polygon",
         nativeTokenName: "Matic",
         nativeTokenSymbol: "MATIC",
         imageUrl:
             "https://seeklogo.com/images/P/polygon-matic-logo-1DFDA3A3A8-seeklogo.com.png",
-        designRating: "",
+        designRating: "C",
         designDescription: [
             "Centralized as only 100 validators secure the chain, with moderate likelihood of censorship or attacks",
             "Validator block rewards are unsustainable, compromising long-term viability",
@@ -215,13 +215,13 @@ const protocolData: Prisma.ProtocolCreateInput[] = [
 
 const poolData: Prisma.PoolCreateInput[] = [
     {
-        name: "Uniswap USDC-ETH Market Making 5bp",
+        name: "Uniswap USDC-ETH Market Making 0.05%",
         token0: { connect: { id: 1 } },
         token1: { connect: { id: 3 } },
         description:
             "This pool facilitates trades between ETH and USDC. Your yield is generated from swap fees paid by traders when an exchange happens.",
         address: "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
-        blockchain: { connect: { id: 1 } },
+        blockchain: { connect: { id: ETHEREUM_BLOCKCHAIN.blockchainId } },
         overallRiskRating: "A",
         fundamentalsRiskRating: "A",
         economicsRiskRating: "C",
@@ -248,7 +248,7 @@ const poolData: Prisma.PoolCreateInput[] = [
         description:
             "This pool facilitates trades between ETH and USDC. Your yield is generated from swap fees paid by traders when an exchange happens.",
         address: "0x17c14d2c404d167802b16c450d3c99f88f2c4f4d",
-        blockchain: { connect: { id: 42161 } },
+        blockchain: { connect: { id: ARBITRUM_BLOCKCHAIN.blockchainId } },
         factory: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
         fee: 3000,
         protocol: { connect: { id: 1 } },
@@ -275,7 +275,7 @@ const poolData: Prisma.PoolCreateInput[] = [
         token0: { connect: { id: 1 } },
         token1: { connect: { id: 2 } },
         address: "0x45dda9cb7c25131df268515131f647d726f50608",
-        blockchain: { connect: { id: 137 } },
+        blockchain: { connect: { id: POLYGON_BLOCKCHAIN.blockchainId } },
         protocol: { connect: { id: 1 } },
         factory: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
         token0Address: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
@@ -302,7 +302,7 @@ const poolData: Prisma.PoolCreateInput[] = [
         description:
             "This pool facilitates trades between MATIC and ETH. Your yield is generated from swap fees paid by traders when an exchange happens.",
         address: "0x167384319b41f7094e62f7506409eb38079abff8",
-        blockchain: { connect: { id: 137 } },
+        blockchain: { connect: { id: POLYGON_BLOCKCHAIN.blockchainId } },
         protocol: { connect: { id: 1 } },
         factory: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
         token0Address: "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",

@@ -4,7 +4,7 @@
     "main": "index.js",
     "license": "MIT",
     "scripts": {
-        "start": "ts-node-dev src/index.ts",
+        "start": "ts-node-dev --exit-child src/index.ts",
         "build": "yarn tsc"
     },
     "prisma": {

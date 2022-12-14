@@ -1,9 +1,8 @@
-/* eslint-disable indent */
 import { ethers } from "ethers";
 import {
-    ARBITRUM_BLOCKCHAIN_ID,
-    ETHEREUM_BLOCKCHAIN_ID,
-    POLYGON_BLOCKCHAIN_ID,
+    ARBITRUM_BLOCKCHAIN,
+    ETHEREUM_BLOCKCHAIN,
+    POLYGON_BLOCKCHAIN,
 } from "../utils/constants";
 
 const INFURA_ETHEREUM_URL = process.env.INFURA_ETHEREUM_URL;
@@ -23,16 +22,12 @@ const arbitrumProvider = new ethers.providers.JsonRpcProvider(
 );
 
 const getProvider = (chainId: number): ethers.providers.JsonRpcProvider => {
-    switch (chainId) {
-        case ETHEREUM_BLOCKCHAIN_ID:
-            return ethereumProvider;
-        case ARBITRUM_BLOCKCHAIN_ID:
-            return arbitrumProvider;
-        case POLYGON_BLOCKCHAIN_ID:
-            return polygonProvider;
-        default:
-            throw new Error("Unknown chain");
-    }
+    if (chainId === ETHEREUM_BLOCKCHAIN.blockchainId) return ethereumProvider;
+    else if (chainId === POLYGON_BLOCKCHAIN.blockchainId)
+        return polygonProvider;
+    else if (chainId === ARBITRUM_BLOCKCHAIN.blockchainId)
+        return arbitrumProvider;
+    else throw new Error("Unknown blockchainId");
 };
 
 export { ethereumProvider, polygonProvider, arbitrumProvider, getProvider };

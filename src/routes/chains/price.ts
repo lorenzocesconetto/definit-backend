@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { abi as IUniswapV3PoolABI } from "@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json";
 import { abi as QuoterABI } from "@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json";
 import { ethereumProvider } from "../../providers/ethers";
-import { getTokenAbi } from "../../services/getTokenAbi";
+import { getContractAbi } from "../../services/getContractAbi";
 import { getTokenImmutables } from "../../services/getContractImmutables";
 import { Type } from "@sinclair/typebox";
 import { FastifyTypebox } from "../types";
@@ -32,8 +32,8 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
         ]);
 
         const [token0Abi, token1Abi] = await Promise.all([
-            getTokenAbi(token0),
-            getTokenAbi(token1),
+            getContractAbi(token0),
+            getContractAbi(token1),
         ]);
 
         const token0Contract = new ethers.Contract(
