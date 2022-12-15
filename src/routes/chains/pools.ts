@@ -60,6 +60,7 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
             subgraphUrl: blockchain.subgraphUrl,
             endTime: getCurrentTimestampInSeconds(),
         });
+
         return data;
     });
 

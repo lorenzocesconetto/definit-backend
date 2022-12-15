@@ -1,3 +1,4 @@
+import { prisma } from "../providers/prisma";
 import { getTokenBalance } from "./getTokenBalance";
 import { getTokenPrice } from "./getTokenPrice";
 
@@ -15,6 +16,17 @@ interface RGetPoolTVL {
     token0Price: number;
     token1Price: number;
 }
+
+const getPoolTVLById = async (poolId: number) => {
+    const pool = await prisma.pool.findUniqueOrThrow({ where: { id: poolId } });
+    const data = await getPoolTVL({
+        blockchainId: pool.blockchainId,
+        poolAddress: pool.address,
+        token0Address: pool.token0Address,
+        token1Address: pool.token1Address,
+    });
+    return data;
+};
 
 const getPoolTVL = async ({
     blockchainId,
@@ -44,4 +56,4 @@ const getPoolTVL = async ({
     return { tvlUSD, token0Balance, token1Balance, token0Price, token1Price };
 };
 
-export { getPoolTVL };
+export { getPoolTVL, getPoolTVLById };

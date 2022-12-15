@@ -6,13 +6,29 @@ interface IgetPoolSubgraph {
     subgraphUrl: string;
 }
 
+export interface IPoolSubgraph {
+    date: number;
+    volumeUSD: string;
+    tvlUSD: string;
+    feesUSD: string;
+    liquidity: string;
+    token0Price: string;
+    token1Price: string;
+    pool: {
+        feeTier: string;
+        __typename: string;
+    };
+    __typename: string;
+}
+export type TGetPoolSubgraph = IPoolSubgraph[];
+
 const getPoolSubgraph = async ({
     address,
     endTime,
     skip,
     first,
     subgraphUrl,
-}: IgetPoolSubgraph) => {
+}: IgetPoolSubgraph): Promise<TGetPoolSubgraph> => {
     const body = {
         operationName: "poolDayDatas",
         variables: {
@@ -51,7 +67,8 @@ const getPoolSubgraph = async ({
         body: JSON.stringify(body),
         method: "POST",
     });
-    const data = await response.json();
+    const json = await response.json();
+    const data: IPoolSubgraph[] = json.data.poolDayDatas;
     return data;
 };
 

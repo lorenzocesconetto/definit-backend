@@ -66,6 +66,7 @@ CREATE TABLE "pools" (
     "impermanent_loss_description" TEXT[],
     "yield_outlook_rating" TEXT NOT NULL,
     "yield_outlook_description" TEXT[],
+    "defi_llama_id" TEXT NOT NULL,
 
     CONSTRAINT "pools_pkey" PRIMARY KEY ("id")
 );

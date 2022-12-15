@@ -88,6 +88,7 @@ model Pool {
   // Yield Risk
   yieldOutlookRating         String     @map("yield_outlook_rating") // @TechDebt: All ratings should be an Enum
   yieldOutlookDescription    String[]   @map("yield_outlook_description")
+  defiLlamaId                String     @map("defi_llama_id")
 
   @@map("pools")
 }

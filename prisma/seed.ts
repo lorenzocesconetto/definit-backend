@@ -240,33 +240,7 @@ const poolData: Prisma.PoolCreateInput[] = [
             "Highly sustainable pool as yield is purely organic and based on market supply and demand",
             "Very high TVL at over $100M, which means your yield is barely impacted by incremental deposits into the pool",
         ],
-    },
-    {
-        name: "Uniswap ETH-USDC Market Making 30bp",
-        token0: { connect: { id: 3 } },
-        token1: { connect: { id: 1 } },
-        description:
-            "This pool facilitates trades between ETH and USDC. Your yield is generated from swap fees paid by traders when an exchange happens.",
-        address: "0x17c14d2c404d167802b16c450d3c99f88f2c4f4d",
-        blockchain: { connect: { id: ARBITRUM_BLOCKCHAIN.blockchainId } },
-        factory: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
-        fee: 3000,
-        protocol: { connect: { id: 1 } },
-        tickSpacing: 60,
-        token0Address: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
-        token1Address: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
-        overallRiskRating: "B",
-        fundamentalsRiskRating: "B",
-        economicsRiskRating: "C",
-        yieldOutlookRating: "B",
-        yieldOutlookDescription: [
-            "Yield outlook is stable to positive as pool earnings are generated from organic user demand of protocol services",
-            "Moderate TVL means your yield declines slightly for incremental deposits into the pool",
-        ],
-        impermanentLossRating: "D",
-        impermanentLossDescription: [
-            "Underlying assets have no correlation and assets in the pool will likely experience price divergence; impermanent loss (IL) expected if there is price divergence between underlying assets.",
-        ],
+        defiLlamaId: "665dc8bc-c79d-4800-97f7-304bf368e547",
     },
     {
         name: "Uniswap USDC-WETH Market Making",
@@ -294,6 +268,7 @@ const poolData: Prisma.PoolCreateInput[] = [
             "Yield outlook is stable to positive as pool earnings are generated from organic user demand of protocol services",
             "Moderate TVL means your yield declines slightly for incremental deposits into the pool",
         ],
+        defiLlamaId: "7755b02a-ba25-4025-85c7-77908d78c486",
     },
     {
         name: "Uniswap MATIC-WETH Market Making",
@@ -321,6 +296,35 @@ const poolData: Prisma.PoolCreateInput[] = [
             "Yield outlook is stable to positive as pool earnings are generated from organic user demand of protocol services",
             "Moderate TVL means your yield declines slightly for incremental deposits into the pool",
         ],
+        defiLlamaId: "d8ce4c9a-f1cf-4792-ad78-b5446d06a650",
+    },
+    {
+        name: "Uniswap ETH-USDC Market Making 30bp",
+        token0: { connect: { id: 3 } },
+        token1: { connect: { id: 1 } },
+        description:
+            "This pool facilitates trades between ETH and USDC. Your yield is generated from swap fees paid by traders when an exchange happens.",
+        address: "0x17c14d2c404d167802b16c450d3c99f88f2c4f4d",
+        blockchain: { connect: { id: ARBITRUM_BLOCKCHAIN.blockchainId } },
+        factory: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+        fee: 3000,
+        protocol: { connect: { id: 1 } },
+        tickSpacing: 60,
+        token0Address: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+        token1Address: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
+        overallRiskRating: "B",
+        fundamentalsRiskRating: "B",
+        economicsRiskRating: "C",
+        yieldOutlookRating: "B",
+        yieldOutlookDescription: [
+            "Yield outlook is stable to positive as pool earnings are generated from organic user demand of protocol services",
+            "Moderate TVL means your yield declines slightly for incremental deposits into the pool",
+        ],
+        impermanentLossRating: "D",
+        impermanentLossDescription: [
+            "Underlying assets have no correlation and assets in the pool will likely experience price divergence; impermanent loss (IL) expected if there is price divergence between underlying assets.",
+        ],
+        defiLlamaId: "d8f13b99-3eb8-436f-97d6-882ea1eff8f4",
     },
 ];
 

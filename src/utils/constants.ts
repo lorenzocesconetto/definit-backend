@@ -11,8 +11,8 @@ const ARBITRUM_BLOCKCHAIN_ID = 42161;
 const ETHEREUM_SUBGRAPH_URL =
     "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3";
 const POLYGON_SUBGRAPH_URL =
-    "https://api.thegraph.com/subgraphs/name/messari/uniswap-v3-polygon";
-// "https://api.thegraph.com/subgraphs/name/ianlapham/uniswap-v3-polygon";
+    "https://api.thegraph.com/subgraphs/name/ianlapham/uniswap-v3-polygon";
+// "https://api.thegraph.com/subgraphs/name/messari/uniswap-v3-polygon";
 const ARBITRUM_SUBGRAPH_URL =
     "https://api.thegraph.com/subgraphs/name/ianlapham/uniswap-arbitrum-one";
 
