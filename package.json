@@ -5,7 +5,9 @@
     "license": "MIT",
     "scripts": {
         "start": "ts-node-dev --exit-child src/index.ts",
-        "build": "yarn tsc"
+        "build": "yarn tsc",
+        "start:migrate": "npx prisma migrate deploy && yarn start",
+        "seed": "npx prisma db seed"
     },
     "prisma": {
         "seed": "ts-node-dev prisma/seed.ts"

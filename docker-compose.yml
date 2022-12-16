@@ -1,0 +1,58 @@
+version: '3.9'
+
+services:
+
+  backend:
+    build:
+      dockerfile: ./Dockerfile
+    image: backend
+    container_name: backend
+    restart: unless-stopped
+    # Infinite loop to keep container live doing nothing. Useful for debugging. Uncomment the line below.
+    # entrypoint: /bin/bash -c "while true; do sleep 1; done"
+    tty: true # Send container output to logs
+    env_file:
+      - .env.docker-compose
+    ports:
+      - "8000:8000" # expose port 8080 on the host machine, to port 8080 inside the container (HOST:CONTAINER)
+    volumes:
+      - ./:/usr/src/app # Update code in the container automatically
+    networks:
+      - app-network
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:15.1-alpine
+    container_name: db
+    restart: unless-stopped
+    tty: true # Send container output to logs
+    # Infinite loop to keep container live doing nothing. Useful for debugging. Just uncomment it.
+    # command: bash -c "while true; do sleep 1; done"
+    environment:
+      - POSTGRES_DB=azion
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass
+    volumes:
+      - cell_data_api-postgres:/var/lib/postgresql/data
+    ports:
+      - "5431:5432" # expose 5431 instead to avoid conflicts with postgres running on host machine
+    expose:
+      - "5432" # Exposes port internally to other services
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d azion -U user"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+
+
+networks:
+  app-network:
+
+
+volumes:
+  cell_data_api-postgres:

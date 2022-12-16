@@ -243,7 +243,7 @@ const poolData: Prisma.PoolCreateInput[] = [
         defiLlamaId: "665dc8bc-c79d-4800-97f7-304bf368e547",
     },
     {
-        name: "Uniswap USDC-WETH Market Making",
+        name: "Uniswap USDC-WETH Market Making 0.05%",
         description:
             "This pool facilitates trades between USDC and ETH. Your yield is generated from swap fees paid by traders when an exchange happens.",
         token0: { connect: { id: 1 } },
@@ -271,7 +271,7 @@ const poolData: Prisma.PoolCreateInput[] = [
         defiLlamaId: "7755b02a-ba25-4025-85c7-77908d78c486",
     },
     {
-        name: "Uniswap MATIC-WETH Market Making",
+        name: "Uniswap MATIC-WETH Market Making 0.3%",
         token0: { connect: { id: 4 } },
         token1: { connect: { id: 2 } },
         description:
@@ -299,7 +299,7 @@ const poolData: Prisma.PoolCreateInput[] = [
         defiLlamaId: "d8ce4c9a-f1cf-4792-ad78-b5446d06a650",
     },
     {
-        name: "Uniswap ETH-USDC Market Making 30bp",
+        name: "Uniswap ETH-USDC Market Making 0.3%",
         token0: { connect: { id: 3 } },
         token1: { connect: { id: 1 } },
         description:
@@ -332,23 +332,42 @@ async function main() {
     console.log("Start seeding database...");
     // Tokens
     for (const t of tokenData) {
-        const token = await prisma.token.create({ data: t });
-        console.log(`Created token: ${token.id} ${token.symbol}`);
+        try {
+            const token = await prisma.token.create({ data: t });
+            console.log(`Created token: ${token.id} ${token.symbol}`);
+        } catch (err) {
+            console.log(err);
+        }
     }
     // Blockchains
     for (const b of blockchainData) {
-        const blockchain = await prisma.blockchain.create({ data: b });
-        console.log(`Created blockchain: ${blockchain.id} ${blockchain.name}`);
+        try {
+            const blockchain = await prisma.blockchain.create({ data: b });
+
+            console.log(
+                `Created blockchain: ${blockchain.id} ${blockchain.name}`
+            );
+        } catch (err) {
+            console.log(err);
+        }
     }
     // Protocols
     for (const p of protocolData) {
-        const protocol = await prisma.protocol.create({ data: p });
-        console.log(`Created protocol: ${protocol.id} ${protocol.name}`);
+        try {
+            const protocol = await prisma.protocol.create({ data: p });
+            console.log(`Created protocol: ${protocol.id} ${protocol.name}`);
+        } catch (err) {
+            console.log(err);
+        }
     }
     // Pools
     for (const p of poolData) {
-        const pool = await prisma.pool.create({ data: p });
-        console.log(`Created pool: ${pool.id} ${pool.name}`);
+        try {
+            const pool = await prisma.pool.create({ data: p });
+            console.log(`Created pool: ${pool.id} ${pool.name}`);
+        } catch (err) {
+            console.log(err);
+        }
     }
 }
 
