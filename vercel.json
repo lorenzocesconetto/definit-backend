@@ -2,7 +2,7 @@
     "rewrites": [
         {
             "source": "/(.*)",
-            "destination": "./build/serverless.js"
+            "destination": "./api/serverless.ts"
         }
     ],
     "buildCommand": "yarn build",
