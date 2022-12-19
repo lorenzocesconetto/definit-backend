@@ -4,5 +4,8 @@
             "source": "/(.*)",
             "destination": "./build/serverless.js"
         }
-    ]
+    ],
+    "buildCommand": "yarn build",
+    "installCommand": "yarn install",
+    "outputDirectory": "build"
 }
