@@ -1,7 +1,7 @@
 {
     "name": "axion-mvp-backend",
     "version": "1.0.0",
-    "main": "index.js",
+    "main": "./build/api/serverless.js",
     "license": "MIT",
     "scripts": {
         "start": "ts-node-dev --exit-child src/index.ts",
