@@ -490,10 +490,10 @@
   resolved "https://registry.yarnpkg.com/@prisma/engines/-/engines-4.7.1.tgz#d657d4d05724158140022fa00614e143643090c2"
   integrity sha512-zWabHosTdLpXXlMefHmnouhXMoTB1+SCbUU3t4FCmdrtIOZcarPKU3Alto7gm/pZ9vHlGOXHCfVZ1G7OIrSbog==
 
-"@sinclair/typebox@^0.25.11":
-  version "0.25.11"
-  resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.25.11.tgz#476bad310092de48af7a9807ecd75019ac01f3d7"
-  integrity sha512-GgUJN0Drvh74i8gOl2S8SkHuAgkZJtzzd6EmfBVxpNDB6QmzXdZ3tyUt02Kr42X58as5I187CKiWpLCMJmdLbw==
+"@sinclair/typebox@^0.25.14":
+  version "0.25.14"
+  resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.25.14.tgz#2063552e614b77d5d4f2ae404449084d7e90172c"
+  integrity sha512-QHPtRqD95nGnJZHWolgKFNmpuY8gpqVEfyasUSJO78X62f4nKmxPbDjd8FpMmwj2J8d0gQWChLtuBtH4yw0qpA==
 
 "@tsconfig/node10@^1.0.7":
   version "1.0.9"
