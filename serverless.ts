@@ -5,7 +5,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 import Fastify, { FastifyReply, FastifyRequest } from "fastify";
-import { build } from "../src";
+import { build } from "./src";
 
 // Instantiate Fastify with some config
 const app = Fastify({

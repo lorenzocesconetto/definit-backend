@@ -3,8 +3,12 @@
     "version": "1.0.0",
     "main": "./build/api/serverless.js",
     "license": "MIT",
+    "engines": {
+        "node": "18.x"
+    },
     "scripts": {
-        "start": "ts-node-dev --exit-child src/index.ts",
+        "start": "node ./build/src/index.js",
+        "start:dev": "ts-node-dev --exit-child src/index.ts",
         "build": "yarn tsc",
         "start:migrate": "npx prisma migrate deploy && yarn start",
         "seed": "npx prisma db seed"
