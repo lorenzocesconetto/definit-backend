@@ -8,7 +8,7 @@
     },
     "scripts": {
         "start": "ts-node-dev --exit-child src/index.ts",
-        "start:heroku": "node ./build/src/index.js",
+        "start:prod": "node ./build/src/index.js",
         "build": "yarn tsc",
         "start:migrate": "npx prisma migrate deploy && yarn start",
         "seed": "npx prisma db seed"
