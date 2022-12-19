@@ -13,7 +13,13 @@ import { checkEnvVars } from "./utils/checkEnvVars";
 function build(): FastifyInstance {
     const _server = Fastify({ trustProxy: true, logger: false }); // Must trust proxy for Google Cloud Run
     const server = _server.withTypeProvider<TypeBoxTypeProvider>();
-    server.register(cors, { origin: ["http://localhost:3000"] });
+    server.register(cors, {
+        origin: [
+            "https://azion.xyz",
+            "https://www.azion.xyz",
+            "https://localhost:3000",
+        ],
+    });
     server.get("/", {}, () => {
         return { status: "Healthy" };
     });
