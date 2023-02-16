@@ -31,7 +31,7 @@ Public IP address: `34.151.214.97`.
 -   You may connect using the Cloud SQL Proxy:
 
     ```
-    cloud_sql_proxy -instances=playground-294014:southamerica-east1:azion-db=tcp:3306
+    cloud_sql_proxy -instances=playground-294014:southamerica-east1:azion=tcp:3306
     ```
 
 -   Then run (replace `username` and `password` with the appropriate values):

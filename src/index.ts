@@ -17,7 +17,10 @@ function build(): FastifyInstance {
         origin: [
             "https://azion.xyz",
             "https://www.azion.xyz",
+            "https://definit.xyz",
+            "https://www.definit.xyz",
             "https://localhost:3000",
+            "http://localhost:3000",
         ],
     });
     server.get("/", {}, () => {
