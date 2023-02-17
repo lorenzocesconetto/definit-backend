@@ -11,8 +11,39 @@ import { checkEnvVars } from "./utils/checkEnvVars";
 // For more details, please visit the URL above.
 
 function build(): FastifyInstance {
-    const _server = Fastify({ trustProxy: true, logger: false }); // Must trust proxy for Google Cloud Run
+    checkEnvVars(); // Checks if environment variables are properly set
+    const _server = Fastify({
+        trustProxy: true,
+        logger: process.env.ENV == "prod",
+    }); // Must trust proxy for Google Cloud Run
+
     const server = _server.withTypeProvider<TypeBoxTypeProvider>();
+
+    // Redirect to https, but only if in production
+    if (process.env.ENV == "prod") {
+        server.addHook("preHandler", async (req, reply) => {
+            console.log(
+                "----\n\n",
+                req.headers["x-forwarded-proto"],
+                "\n\n----"
+            );
+            const isHttps =
+                ((req.headers["x-forwarded-proto"] as string) || "").substring(
+                    0,
+                    5
+                ) === "https";
+            if (isHttps) {
+                return;
+            }
+
+            const { method, url } = req.raw;
+
+            if (method && ["GET", "HEAD"].includes(method)) {
+                const host = req.headers.host || req.hostname;
+                reply.redirect(301, `https://${host}${url}`);
+            }
+        });
+    }
     server.register(cors, {
         origin: [
             "https://azion.xyz",
@@ -23,11 +54,11 @@ function build(): FastifyInstance {
             "http://localhost:3000",
         ],
     });
+
     server.get("/", {}, () => {
         return { status: "Healthy" };
     });
     server.register(routes, { prefix: "/v1" });
-    checkEnvVars(); // Checks if environment variables are properly set
     return server;
 }
 

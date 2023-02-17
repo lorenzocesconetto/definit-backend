@@ -79,3 +79,11 @@ gcloud config set project `PROJECT ID`
 ```
 
 ---
+
+## - Heroku
+
+View app `logs`:
+
+```
+heroku logs --app azion --source app
+```

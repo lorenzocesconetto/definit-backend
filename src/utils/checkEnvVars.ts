@@ -14,5 +14,8 @@ const checkEnvVars = () => {
     if (!process.env.ETHERSCAN_API_KEY) {
         throw new Error("Environment variable ETHERSCAN_API_KEY must be set");
     }
+    if (!process.env.ENV) {
+        throw new Error("Environment variable ENV must be set");
+    }
 };
 export { checkEnvVars };
