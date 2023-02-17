@@ -82,7 +82,7 @@ gcloud config set project `PROJECT ID`
 
 ## - Heroku
 
-View app `logs`:
+View app `logs`. You must press some key and then login within the browser. Beware that `Safari` may be hiding your actual `IP address` which will cause an error. If that's the case use another browser instead:
 
 ```
 heroku logs --app azion --source app

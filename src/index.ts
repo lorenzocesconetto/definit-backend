@@ -5,6 +5,7 @@ import { routes } from "./routes";
 import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
 import cors from "@fastify/cors";
 import { checkEnvVars } from "./utils/checkEnvVars";
+import { redirectToHttps } from "./hooks/preHandler";
 
 // This code was inspired by this documentation:
 // https://www.fastify.io/docs/latest/Guides/Serverless/#google-cloud-run
@@ -20,30 +21,9 @@ function build(): FastifyInstance {
     const server = _server.withTypeProvider<TypeBoxTypeProvider>();
 
     // Redirect to https, but only if in production
-    if (process.env.ENV == "prod") {
-        server.addHook("preHandler", async (req, reply) => {
-            console.log(
-                "----\n\n",
-                req.headers["x-forwarded-proto"],
-                "\n\n----"
-            );
-            const isHttps =
-                ((req.headers["x-forwarded-proto"] as string) || "").substring(
-                    0,
-                    5
-                ) === "https";
-            if (isHttps) {
-                return;
-            }
+    if (process.env.ENV == "prod")
+        server.addHook("preHandler", redirectToHttps);
 
-            const { method, url } = req.raw;
-
-            if (method && ["GET", "HEAD"].includes(method)) {
-                const host = req.headers.host || req.hostname;
-                reply.redirect(301, `https://${host}${url}`);
-            }
-        });
-    }
     server.register(cors, {
         origin: [
             "https://azion.xyz",
@@ -58,7 +38,9 @@ function build(): FastifyInstance {
     server.get("/", {}, () => {
         return { status: "Healthy" };
     });
+
     server.register(routes, { prefix: "/v1" });
+
     return server;
 }
 
