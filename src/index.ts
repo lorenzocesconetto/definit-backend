@@ -29,6 +29,7 @@ function build(): FastifyInstance {
             "https://azion.xyz",
             "https://www.azion.xyz",
             "https://definit.xyz",
+            "https://staging.definit.xyz",
             "https://www.definit.xyz",
             "https://localhost:3000",
             "http://localhost:3000",
