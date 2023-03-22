@@ -1,4 +1,4 @@
-import { TGetPoolSubgraph } from "../services/getPoolSubgraph";
+import { TGetPoolSubgraph } from "../services/subgraph";
 
 const getPoolEarnings30d = (subgraph: TGetPoolSubgraph): number => {
     const fees30d = subgraph.reduce(

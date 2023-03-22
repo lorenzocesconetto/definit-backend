@@ -1,4 +1,4 @@
-import { TPoolDefiLlama } from "../services/getPoolDefiLlama";
+import { TPoolDefiLlama } from "../services/defiLlama";
 
 const getPoolAPY30d = (llama: TPoolDefiLlama): number => {
     const llama30d = llama.slice(llama.length - 30, llama.length);

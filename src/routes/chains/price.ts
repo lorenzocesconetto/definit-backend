@@ -2,8 +2,7 @@ import { ethers } from "ethers";
 import { abi as IUniswapV3PoolABI } from "@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json";
 import { abi as QuoterABI } from "@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json";
 import { ethereumProvider } from "../../providers/ethers";
-import { getContractAbi } from "../../services/getContractAbi";
-import { getTokenImmutables } from "../../services/getContractImmutables";
+import { web3Service, etherscanService } from "../../services";
 import { Type } from "@sinclair/typebox";
 import { FastifyTypebox } from "../types";
 
@@ -32,8 +31,8 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
         ]);
 
         const [token0Abi, token1Abi] = await Promise.all([
-            getContractAbi(token0),
-            getContractAbi(token1),
+            etherscanService.getContractAbi(token0),
+            etherscanService.getContractAbi(token1),
         ]);
 
         const token0Contract = new ethers.Contract(
@@ -48,8 +47,8 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
         );
 
         const [token0Immutables, token1Immutables] = await Promise.all([
-            getTokenImmutables(token0Contract),
-            getTokenImmutables(token1Contract),
+            web3Service.getTokenImmutables(token0Contract),
+            web3Service.getTokenImmutables(token1Contract),
         ]);
 
         const quoterContract = new ethers.Contract(

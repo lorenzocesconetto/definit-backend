@@ -1,3 +1,7 @@
+////////////////////////////////////////////////////
+// Pool data
+////////////////////////////////////////////////////
+
 interface IPoolDefiLlama {
     timestamp: string;
     tvlUsd: number;
@@ -19,4 +23,4 @@ const getPoolDefiLlama = async (
     return json.data.slice(json.data.length - 90, json.data.length - 1);
 };
 
-export { getPoolDefiLlama };
+export const defiLlamaService = { getPoolDefiLlama };

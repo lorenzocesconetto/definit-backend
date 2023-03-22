@@ -9,4 +9,4 @@ const getContractAbi = async (address: string) => {
     return abi;
 };
 
-export { getContractAbi };
+export const etherscanService = { getContractAbi };

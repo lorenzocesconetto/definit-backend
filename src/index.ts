@@ -26,11 +26,10 @@ function build(): FastifyInstance {
 
     server.register(cors, {
         origin: [
-            "https://azion.xyz",
-            "https://www.azion.xyz",
             "https://definit.xyz",
-            "https://staging.definit.xyz",
             "https://www.definit.xyz",
+            "https://staging.definit.xyz",
+            "https://app.definit.xyz",
             "https://localhost:3000",
             "http://localhost:3000",
         ],

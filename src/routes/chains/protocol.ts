@@ -1,8 +1,7 @@
 import { ethers } from "ethers";
 import { abi as IUniswapV3PoolABI } from "@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json";
 import { getProvider } from "../../providers/ethers";
-import { getPoolImmutables } from "../../services/getPoolImmutables";
-import { getPoolState } from "../../services/getPoolState";
+import { web3Service } from "../../services";
 import { Type } from "@sinclair/typebox";
 import { FastifyTypebox } from "../types";
 
@@ -24,8 +23,8 @@ async function routes(fastify: FastifyTypebox) {
         );
 
         const [immutables, state] = await Promise.all([
-            getPoolImmutables(poolContract),
-            getPoolState(poolContract),
+            web3Service.getPoolImmutables(poolContract),
+            web3Service.getPoolState(poolContract),
         ]);
 
         return { immutables, state };

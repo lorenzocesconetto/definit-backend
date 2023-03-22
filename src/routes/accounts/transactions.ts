@@ -1,5 +1,5 @@
 import { Type } from "@sinclair/typebox";
-import { covalentService } from "../../services/covalentService";
+import { covalentService } from "../../services/covalent";
 import { FastifyTypebox } from "../types";
 
 const schema = {

@@ -6,12 +6,7 @@ import { getBlockchain } from "../../utils/getBlockchain";
 import { getCurrentTimestampInSeconds } from "../../utils/getCurrentTimestamp";
 import { FastifyTypebox } from "../types";
 import { abi } from "@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json";
-import {
-    getPoolState,
-    getPoolSubgraph,
-    getPoolTVL,
-    getPoolImmutables,
-} from "../../services";
+import { web3Service, subgraphManage } from "../../services";
 
 const schema = {
     params: Type.Object({
@@ -25,8 +20,8 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
         const { blockchainId, address } = req.params;
         const provider = getProvider(blockchainId);
         const poolContract = new ethers.Contract(address, abi, provider);
-        const pool = await getPoolImmutables(poolContract);
-        const data = await getPoolTVL({
+        const pool = await web3Service.getPoolImmutables(poolContract);
+        const data = await web3Service.getPoolTVL({
             blockchainId,
             poolAddress: address,
             token0Address: pool.token0,
@@ -39,7 +34,7 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
         const { blockchainId, address } = req.params;
         const provider = getProvider(blockchainId);
         const contract = new ethers.Contract(address, abi, provider);
-        const data = await getPoolImmutables(contract);
+        const data = await web3Service.getPoolImmutables(contract);
         return data;
     });
 
@@ -47,13 +42,13 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
         const { blockchainId, address } = req.params;
         const provider = getProvider(blockchainId);
         const contract = new ethers.Contract(address, abi, provider);
-        const data = await getPoolState(contract);
+        const data = await web3Service.getPoolState(contract);
         return data;
     });
 
     fastify.get("/pools/:address/subgraph", { schema }, async req => {
         const blockchain = getBlockchain(req.params.blockchainId);
-        const data = await getPoolSubgraph({
+        const data = await subgraphManage.getPoolSubgraph({
             address: req.params.address,
             first: 30,
             skip: 0,

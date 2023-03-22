@@ -1,6 +1,6 @@
 import { Type } from "@sinclair/typebox";
 import { FastifyTypebox } from "../types";
-import { getTokenBalance } from "../../services/getTokenBalance";
+import { web3Service } from "../../services";
 
 const schema = {
     params: Type.Object({
@@ -16,7 +16,7 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
         { schema },
         async req => {
             const { tokenAddress, blockchainId, address } = req.params;
-            const balance = await getTokenBalance({
+            const balance = await web3Service.getTokenBalance({
                 blockchainId,
                 address,
                 tokenAddress,

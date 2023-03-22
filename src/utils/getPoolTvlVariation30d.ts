@@ -1,4 +1,4 @@
-import { TPoolDefiLlama } from "../services/getPoolDefiLlama";
+import { TPoolDefiLlama } from "../services/defiLlama";
 
 const getPoolTvlVariation30d = (
     currentTvl: number,

@@ -72,4 +72,4 @@ const getPoolSubgraph = async ({
     return data;
 };
 
-export { getPoolSubgraph };
+export const subgraphManage = { getPoolSubgraph };

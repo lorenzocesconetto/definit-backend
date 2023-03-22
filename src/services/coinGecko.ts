@@ -20,4 +20,4 @@ const getTokenPrice = async ({
     return data;
 };
 
-export { getTokenPrice };
+export const coinGeckoService = { getTokenPrice };

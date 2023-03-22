@@ -1,7 +1,5 @@
 import { Type } from "@sinclair/typebox";
 import { prisma } from "../providers/prisma";
-import { getPoolSubgraph, getPoolTVL, getPoolTVLById } from "../services";
-import { getPoolDefiLlama } from "../services/getPoolDefiLlama";
 import { getBlockchain } from "../utils/getBlockchain";
 import { getPoolEarnings30d } from "../utils/getPoolEarnings30d";
 import { getPoolTvlVariation30d } from "../utils/getPoolTvlVariation30d";
@@ -9,6 +7,7 @@ import { getPoolVolume30d } from "../utils/getPoolVolume30d";
 import { getPoolAPY30d } from "../utils/getPoolAPY30d";
 import { FastifyTypebox } from "./types";
 import { getCurrentTimestampInSeconds } from "../utils/getCurrentTimestamp";
+import { web3Service, defiLlamaService, subgraphManage } from "../services";
 
 const schema = {
     params: Type.Object({
@@ -29,14 +28,14 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
             },
         });
         const TVLs = await Promise.all([
-            getPoolTVLById(1),
-            getPoolTVLById(2),
-            getPoolTVLById(3),
+            web3Service.getPoolTVLById(1),
+            web3Service.getPoolTVLById(2),
+            web3Service.getPoolTVLById(3),
         ]);
         const llamas = await Promise.all([
-            getPoolDefiLlama(pools[0].defiLlamaId),
-            getPoolDefiLlama(pools[1].defiLlamaId),
-            getPoolDefiLlama(pools[2].defiLlamaId),
+            defiLlamaService.getPoolDefiLlama(pools[0].defiLlamaId),
+            defiLlamaService.getPoolDefiLlama(pools[1].defiLlamaId),
+            defiLlamaService.getPoolDefiLlama(pools[2].defiLlamaId),
         ]);
         const enrichedPools = pools.map((pool, index) => ({
             ...pool,
@@ -59,20 +58,20 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
         });
         const blockchain = getBlockchain(pool.blockchainId);
         const [tvl, subgraph, llama] = await Promise.all([
-            getPoolTVL({
+            web3Service.getPoolTVL({
                 blockchainId: pool.blockchainId,
                 poolAddress: pool.address,
                 token0Address: pool.token0Address,
                 token1Address: pool.token1Address,
             }),
-            getPoolSubgraph({
+            subgraphManage.getPoolSubgraph({
                 address: pool.address,
                 endTime: getCurrentTimestampInSeconds(),
                 first: 30,
                 skip: 0,
                 subgraphUrl: blockchain.subgraphUrl,
             }),
-            getPoolDefiLlama(pool.defiLlamaId),
+            defiLlamaService.getPoolDefiLlama(pool.defiLlamaId),
         ]);
         const apy30d = getPoolAPY30d(llama);
         const tvlVariation30d = getPoolTvlVariation30d(tvl.tvlUSD, llama);
@@ -100,9 +99,9 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
                 token1: true,
             },
         });
-        const llama = await getPoolDefiLlama(pool.defiLlamaId);
+        const llama = await defiLlamaService.getPoolDefiLlama(pool.defiLlamaId);
         const apy30d = getPoolAPY30d(llama);
-        const currTvl = await getPoolTVL({
+        const currTvl = await web3Service.getPoolTVL({
             blockchainId: pool.blockchainId,
             poolAddress: pool.address,
             token0Address: pool.token0Address,

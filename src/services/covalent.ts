@@ -75,6 +75,4 @@ const getAccountTransactions = async ({
     return data;
 };
 
-const covalentService = { getAccountBalances, getAccountTransactions };
-
-export { covalentService };
+export const covalentService = { getAccountBalances, getAccountTransactions };
