@@ -7,7 +7,7 @@ import { routes as accountsRoutes } from "./accounts";
 async function routes(fastify: FastifyInstance) {
     fastify.register(protocolsRoutes, { prefix: "/chains/:blockchainId" });
     fastify.register(poolsRoutes);
-    fastify.register(tokensRoutes, { prefix: "/chains/:blockchainId" });
+    fastify.register(tokensRoutes, { prefix: "/chains/:blockchainId/tokens" });
     fastify.register(accountsRoutes, {
         prefix: "/chains/:blockchainId/addresses/:address",
     });

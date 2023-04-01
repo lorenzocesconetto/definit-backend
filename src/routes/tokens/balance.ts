@@ -11,19 +11,15 @@ const schema = {
 };
 
 async function routes(fastify: FastifyTypebox): Promise<void> {
-    fastify.get(
-        "/tokens/:tokenAddress/balance/:address",
-        { schema },
-        async req => {
-            const { tokenAddress, blockchainId, address } = req.params;
-            const balance = await web3Service.getTokenBalance({
-                blockchainId,
-                address,
-                tokenAddress,
-            });
-            return balance;
-        }
-    );
+    fastify.get("/:tokenAddress/balance/:address", { schema }, async req => {
+        const { tokenAddress, blockchainId, address } = req.params;
+        const balance = await web3Service.getTokenBalance({
+            blockchainId,
+            address,
+            tokenAddress,
+        });
+        return balance;
+    });
 }
 
 export { routes };
