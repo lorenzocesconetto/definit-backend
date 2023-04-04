@@ -70,8 +70,7 @@ const blockchainData: Prisma.BlockchainCreateInput[] = [
         name: "Ethereum",
         nativeTokenName: "Ether",
         nativeTokenSymbol: "ETH",
-        imageUrl:
-            "https://ethjobs.net/images/logo-eb576c2af423af6250604be82270a66f.png?vsn=d",
+        imageUrl: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
         designDescription: [
             "Highly decentralized with over 400k validators securing the chain, making it resilient to attacks",
             "Validator block rewards are moderately sustainable, but could compromise long-term viability",

@@ -1,5 +1,5 @@
 {
-    "name": "axion-mvp-backend",
+    "name": "definit-mvp-backend",
     "version": "1.0.0",
     "main": "./build/api/serverless.js",
     "license": "MIT",

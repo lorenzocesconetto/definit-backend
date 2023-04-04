@@ -31,7 +31,7 @@ services:
     # Infinite loop to keep container live doing nothing. Useful for debugging. Just uncomment it.
     # command: bash -c "while true; do sleep 1; done"
     environment:
-      - POSTGRES_DB=azion
+      - POSTGRES_DB=definit
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=pass
     volumes:
@@ -43,7 +43,7 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d azion -U user"]
+      test: ["CMD-SHELL", "pg_isready -d definit -U user"]
       interval: 5s
       timeout: 5s
       retries: 5
