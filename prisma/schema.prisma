@@ -61,7 +61,7 @@ model Token {
 
 model Pool {
   id                         Int        @id @default(autoincrement())
-  name                       String
+  name                       String     @unique
   description                String
   // Immutables
   address                    String

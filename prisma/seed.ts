@@ -7,6 +7,9 @@ import {
 
 const prisma = new PrismaClient();
 
+///////////////////////////////////////////////////////
+// Tokens
+///////////////////////////////////////////////////////
 const tokenData: Prisma.TokenCreateInput[] = [
     {
         id: 1,
@@ -62,8 +65,53 @@ const tokenData: Prisma.TokenCreateInput[] = [
             "MATIC is highly correlated to the overall market.",
         ],
     },
+    {
+        id: 5,
+        name: "Dai Stablecoin",
+        symbol: "DAI",
+        strengthRating: "B",
+        strengthDescription: [
+            "DAI is a low-cap, fully collateralized asset. This asset depends on a centralized entity for custody services. This asset is exposed to the underlying risks of Maker and Arbitrum bridge, which are protocols rated as Solid and Moderately Risky, respectively. DAI is the most battle-tested, decentralized stablecoin in DeFi. Maker uses the Peg Stability Module (PSM) as a valuable tool to maintain DAI stability. The PSM is a decentralized exchange that allows users to swap USD stablecoins for DAI at a 1:1 rate. This is another important peg stability factor as it provides liquidity around the peg. The asset has an uncapped supply but has inflation control or burn mechanisms in place.",
+            "DAI is a stablecoin that usually trades within 20bps of its peg to USD, which makes it a solid store of value.",
+        ],
+        volatilityRating: "A",
+        volatilityDescription: [
+            "DAI is a stablecoin that usually trades within 20bps of its peg to USD, which makes it a solid store of value. Maker uses the Peg Stability Module (PSM) as a valuable tool to maintain DAI stability. The PSM is a decentralized exchange that allows users to swap USD stablecoins for DAI at a 1:1 rate. This is another important peg stability factor as it provides liquidity around the peg.",
+        ],
+    },
+    {
+        id: 6,
+        name: "Tether USD",
+        symbol: "USDT",
+        strengthRating: "C",
+        strengthDescription: [
+            "USDT is a large-cap asset with questionable collateral reserves. This asset depends on a centralized entity for custody services. This asset is exposed to the underlying risks of Arbitrum bridge, a protocol rated as Moderately Risky. USDT on Arbitrum is backed 1:1 by USDT locked in the Arbitrum bridge protocol on the Ethereum chain. USDT is fully redeemable for its USD reserves, providing an effective mechanism to retain the peg to $1. The asset has an uncapped supply but has inflation control or burn mechanisms in place.",
+            "USDT is a stablecoin that consistently trades within 10bps of its peg to USD, which makes it a great store of value.",
+        ],
+        volatilityRating: "A",
+        volatilityDescription: [
+            "USDT is a stablecoin that consistently trades within 10bps of its peg to USD, which makes it a great store of value. USDT is fully redeemable for its USD reserves, providing an effective mechanism to retain the peg to $1.",
+        ],
+    },
+    {
+        id: 7,
+        name: "Binance USD",
+        symbol: "BUSD",
+        strengthRating: "B",
+        strengthDescription: [
+            "BUSD is a large-cap, fully collateralized asset. This asset depends on a centralized entity for custody services. This asset is exposed to the underlying risks of Binance Bridge, a protocol rated as Risky. BUSD is backed 1:1 by USD reserves held with a licensed custodian (Paxos). BUSD is fully redeemable for its USD reserves, providing an effective mechanism to retain the peg to $1. The asset has a fixed supply.",
+            "BUSD is a stablecoin that usually trades within 20bps of its peg to USD, which makes it a solid store of value.",
+        ],
+        volatilityRating: "A",
+        volatilityDescription: [
+            "BUSD is a stablecoin that usually trades within 20bps of its peg to USD, which makes it a solid store of value. BUSD is fully redeemable for its USD reserves, providing an effective mechanism to retain the peg to $1.",
+        ],
+    },
 ];
 
+///////////////////////////////////////////////////////
+// Blockchain
+///////////////////////////////////////////////////////
 const blockchainData: Prisma.BlockchainCreateInput[] = [
     {
         id: ETHEREUM_BLOCKCHAIN.blockchainId,
@@ -127,10 +175,13 @@ const blockchainData: Prisma.BlockchainCreateInput[] = [
     },
 ];
 
+///////////////////////////////////////////////////////
+// Protocol
+///////////////////////////////////////////////////////
 const protocolData: Prisma.ProtocolCreateInput[] = [
     {
         id: 1,
-        name: "Uniswap",
+        name: "Uniswap V3",
         imageUrl:
             "https://s2.coinmarketcap.com/static/img/coins/200x200/7083.png",
         codeQualityRating: "A",
@@ -212,6 +263,11 @@ const protocolData: Prisma.ProtocolCreateInput[] = [
     },
 ];
 
+///////////////////////////////////////////////////////
+// Liquidity Pools
+///////////////////////////////////////////////////////
+// Title pattern:   Protocol Token1-Token2 Product Fee
+// Example:         Uniswap USDC-ETH Market Making 0.05%
 const poolData: Prisma.PoolCreateInput[] = [
     {
         name: "Uniswap USDC-ETH Market Making 0.05%",
@@ -325,48 +381,101 @@ const poolData: Prisma.PoolCreateInput[] = [
         ],
         defiLlamaId: "d8f13b99-3eb8-436f-97d6-882ea1eff8f4",
     },
+    {
+        name: "Uniswap DAI-USDT Market Making 0.05%",
+        token0: { connect: { id: 5 } },
+        token1: { connect: { id: 6 } },
+        description:
+            "This pool facilitates trades between DAI and USDT. Your yield is generated from swap fees paid by traders when an exchange happens.",
+        address: "0x6387b0d5853184645cc9a77d6db133355d2eb4e4",
+        blockchain: { connect: { id: ARBITRUM_BLOCKCHAIN.blockchainId } },
+        factory: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+        fee: 500,
+        protocol: { connect: { id: 1 } },
+        tickSpacing: 60,
+        token0Address: "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
+        token1Address: "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+        overallRiskRating: "B",
+        fundamentalsRiskRating: "C",
+        economicsRiskRating: "C",
+        yieldOutlookRating: "C",
+        yieldOutlookDescription: [
+            "Yield outlook is stable to positive as pool earnings are generated from organic user demand of protocol services",
+            "Low TVL means your yield declines significantly for incremental deposits into the pool",
+        ],
+        impermanentLossRating: "B",
+        impermanentLossDescription: [
+            "Low impermanent loss expected as assets in the pool remain highly correlated and have a lower risk of price divergence.",
+        ],
+        defiLlamaId: "65dceabd-4add-4160-8490-6d12eca3e1b7",
+    },
+    {
+        name: "Uniswap BUSD-USDC Market Making 0.01%",
+        token0: { connect: { id: 7 } },
+        token1: { connect: { id: 1 } },
+        description:
+            "This pool facilitates trades between BUSD and USDC. Your yield is generated from swap fees paid by traders when an exchange happens.",
+        address: "0x5e35c4eba72470ee1177dcb14dddf4d9e6d915f4",
+        blockchain: { connect: { id: ETHEREUM_BLOCKCHAIN.blockchainId } },
+        factory: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+        fee: 100,
+        protocol: { connect: { id: 1 } },
+        tickSpacing: 1,
+        token0Address: "0x4Fabb145d64652a948d72533023f6E7A623C7C53",
+        token1Address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        overallRiskRating: "B",
+        fundamentalsRiskRating: "B",
+        economicsRiskRating: "B",
+        yieldOutlookRating: "B",
+        yieldOutlookDescription: [
+            "Yield outlook is stable to positive as pool earnings are generated from organic user demand of protocol services",
+            "Moderate TVL means your yield declines slightly for incremental deposits into the pool",
+        ],
+        impermanentLossRating: "B",
+        impermanentLossDescription: [
+            "Low impermanent loss expected as assets in the pool remain highly correlated and have a lower risk of price divergence.",
+        ],
+        defiLlamaId: "4bb8783d-9919-4a8e-980e-546401a67f63",
+    },
 ];
 
 async function main() {
     console.log("Start seeding database...");
     // Tokens
     for (const t of tokenData) {
-        try {
-            const token = await prisma.token.create({ data: t });
-            console.log(`Created token: ${token.id} ${token.symbol}`);
-        } catch (err) {
-            console.log(err);
-        }
+        const token = await prisma.token.upsert({
+            create: t,
+            update: t,
+            where: { id: t.id },
+        });
+        console.log(`Token: ${token.id} ${token.symbol}`);
     }
     // Blockchains
     for (const b of blockchainData) {
-        try {
-            const blockchain = await prisma.blockchain.create({ data: b });
-
-            console.log(
-                `Created blockchain: ${blockchain.id} ${blockchain.name}`
-            );
-        } catch (err) {
-            console.log(err);
-        }
+        const blockchain = await prisma.blockchain.upsert({
+            create: b,
+            update: b,
+            where: { id: b.id },
+        });
+        console.log(`Blockchain: ${blockchain.id} ${blockchain.name}`);
     }
     // Protocols
     for (const p of protocolData) {
-        try {
-            const protocol = await prisma.protocol.create({ data: p });
-            console.log(`Created protocol: ${protocol.id} ${protocol.name}`);
-        } catch (err) {
-            console.log(err);
-        }
+        const protocol = await prisma.protocol.upsert({
+            create: p,
+            update: p,
+            where: { id: p.id },
+        });
+        console.log(`Protocol: ${protocol.id} ${protocol.name}`);
     }
     // Pools
     for (const p of poolData) {
-        try {
-            const pool = await prisma.pool.create({ data: p });
-            console.log(`Created pool: ${pool.id} ${pool.name}`);
-        } catch (err) {
-            console.log(err);
-        }
+        const pool = await prisma.pool.upsert({
+            create: p,
+            update: p,
+            where: { name: p.name },
+        });
+        console.log(`Pool: ${pool.id} ${pool.name}`);
     }
 }
 

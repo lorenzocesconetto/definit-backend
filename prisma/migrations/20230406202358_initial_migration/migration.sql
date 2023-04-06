@@ -71,6 +71,9 @@ CREATE TABLE "pools" (
     CONSTRAINT "pools_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateIndex
+CREATE UNIQUE INDEX "pools_name_key" ON "pools"("name");
+
 -- AddForeignKey
 ALTER TABLE "pools" ADD CONSTRAINT "pools_blockchain_id_fkey" FOREIGN KEY ("blockchain_id") REFERENCES "blockchains"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 

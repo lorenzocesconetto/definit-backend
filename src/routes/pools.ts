@@ -18,8 +18,15 @@ const schema = {
 async function routes(fastify: FastifyTypebox): Promise<void> {
     fastify.get("/pools/best-risk-reward", async () => {
         const pools = await prisma.pool.findMany({
-            where: { id: { in: [1, 2, 3] } },
-            orderBy: [{ id: "asc" }],
+            where: {
+                name: {
+                    in: [
+                        "Uniswap BUSD-USDC Market Making 0.01%",
+                        "Uniswap DAI-USDT Market Making 0.05%",
+                    ],
+                },
+            },
+            // orderBy: [{ id: "asc" }],
             include: {
                 blockchain: true,
                 protocol: true,
@@ -28,14 +35,12 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
             },
         });
         const TVLs = await Promise.all([
-            web3Service.getPoolTVLById(1),
-            web3Service.getPoolTVLById(2),
-            web3Service.getPoolTVLById(3),
+            web3Service.getPoolTVLById(pools[0].id),
+            web3Service.getPoolTVLById(pools[1].id),
         ]);
         const llamas = await Promise.all([
             defiLlamaService.getPoolDefiLlama(pools[0].defiLlamaId),
             defiLlamaService.getPoolDefiLlama(pools[1].defiLlamaId),
-            defiLlamaService.getPoolDefiLlama(pools[2].defiLlamaId),
         ]);
         const enrichedPools = pools.map((pool, index) => ({
             ...pool,
