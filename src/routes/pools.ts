@@ -26,7 +26,7 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
                     ],
                 },
             },
-            // orderBy: [{ id: "asc" }],
+            orderBy: [{ id: "desc" }],
             include: {
                 blockchain: true,
                 protocol: true,
@@ -34,20 +34,7 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
                 token1: true,
             },
         });
-        const TVLs = await Promise.all([
-            web3Service.getPoolTVLById(pools[0].id),
-            web3Service.getPoolTVLById(pools[1].id),
-        ]);
-        const llamas = await Promise.all([
-            defiLlamaService.getPoolDefiLlama(pools[0].defiLlamaId),
-            defiLlamaService.getPoolDefiLlama(pools[1].defiLlamaId),
-        ]);
-        const enrichedPools = pools.map((pool, index) => ({
-            ...pool,
-            ...TVLs[index],
-            apy30d: getPoolAPY30d(llamas[index]),
-        }));
-        return enrichedPools;
+        return pools;
     });
 
     fastify.get("/pools/:id", { schema }, async req => {

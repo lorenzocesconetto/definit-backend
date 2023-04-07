@@ -61,7 +61,7 @@ model Token {
 
 model Pool {
   id                         Int        @id @default(autoincrement())
-  name                       String     @unique
+  name                       String
   description                String
   // Immutables
   address                    String
@@ -89,6 +89,16 @@ model Pool {
   yieldOutlookRating         String     @map("yield_outlook_rating") // @TechDebt: All ratings should be an Enum
   yieldOutlookDescription    String[]   @map("yield_outlook_description")
   defiLlamaId                String     @map("defi_llama_id")
+  // State: TVL, APY, Earnings, Volume
+  tvlUSD                     Float      @map("tvl_usd")
+  tvlVariation30d            Float      @map("tvl_variation_30d")
+  token0Balance              Float      @map("token_0_balance")
+  token1Balance              Float      @map("token_1_balance")
+  apy30d                     Float      @map("apy_30d")
+  earnings30d                Float      @map("earnings_30d")
+  volume30d                  Float      @map("volume_30d")
+  updatedAt                  DateTime   @map("updated_at")
 
+  @@unique([address, blockchainId], name: "poolIdentifier")
   @@map("pools")
 }

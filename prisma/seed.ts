@@ -4,6 +4,13 @@ import {
     ETHEREUM_BLOCKCHAIN,
     POLYGON_BLOCKCHAIN,
 } from "../src/utils/constants";
+import { defiLlamaService, subgraphManage, web3Service } from "../src/services";
+import { getPoolAPY30d } from "../src/utils/getPoolAPY30d";
+import { getCurrentTimestampInSeconds } from "../src/utils/getCurrentTimestamp";
+import { getPoolTvlVariation30d } from "../src/utils/getPoolTvlVariation30d";
+import { getPoolEarnings30d } from "../src/utils/getPoolEarnings30d";
+import { getPoolVolume30d } from "../src/utils/getPoolVolume30d";
+import { getBlockchain } from "../src/utils/getBlockchain";
 
 const prisma = new PrismaClient();
 
@@ -296,6 +303,14 @@ const poolData: Prisma.PoolCreateInput[] = [
             "Very high TVL at over $100M, which means your yield is barely impacted by incremental deposits into the pool",
         ],
         defiLlamaId: "665dc8bc-c79d-4800-97f7-304bf368e547",
+        apy30d: 0,
+        tvlUSD: 0,
+        tvlVariation30d: 0,
+        earnings30d: 0,
+        volume30d: 0,
+        token0Balance: 0,
+        token1Balance: 0,
+        updatedAt: "",
     },
     {
         name: "Uniswap USDC-WETH Market Making 0.05%",
@@ -324,6 +339,14 @@ const poolData: Prisma.PoolCreateInput[] = [
             "Moderate TVL means your yield declines slightly for incremental deposits into the pool",
         ],
         defiLlamaId: "7755b02a-ba25-4025-85c7-77908d78c486",
+        apy30d: 0,
+        tvlUSD: 0,
+        tvlVariation30d: 0,
+        earnings30d: 0,
+        volume30d: 0,
+        token0Balance: 0,
+        token1Balance: 0,
+        updatedAt: "",
     },
     {
         name: "Uniswap MATIC-WETH Market Making 0.3%",
@@ -352,6 +375,14 @@ const poolData: Prisma.PoolCreateInput[] = [
             "Moderate TVL means your yield declines slightly for incremental deposits into the pool",
         ],
         defiLlamaId: "d8ce4c9a-f1cf-4792-ad78-b5446d06a650",
+        apy30d: 0,
+        tvlUSD: 0,
+        tvlVariation30d: 0,
+        earnings30d: 0,
+        volume30d: 0,
+        token0Balance: 0,
+        token1Balance: 0,
+        updatedAt: "",
     },
     {
         name: "Uniswap ETH-USDC Market Making 0.3%",
@@ -380,6 +411,14 @@ const poolData: Prisma.PoolCreateInput[] = [
             "Underlying assets have no correlation and assets in the pool will likely experience price divergence; impermanent loss (IL) expected if there is price divergence between underlying assets.",
         ],
         defiLlamaId: "d8f13b99-3eb8-436f-97d6-882ea1eff8f4",
+        apy30d: 0,
+        tvlUSD: 0,
+        tvlVariation30d: 0,
+        earnings30d: 0,
+        volume30d: 0,
+        token0Balance: 0,
+        token1Balance: 0,
+        updatedAt: "",
     },
     {
         name: "Uniswap DAI-USDT Market Making 0.05%",
@@ -408,6 +447,14 @@ const poolData: Prisma.PoolCreateInput[] = [
             "Low impermanent loss expected as assets in the pool remain highly correlated and have a lower risk of price divergence.",
         ],
         defiLlamaId: "65dceabd-4add-4160-8490-6d12eca3e1b7",
+        apy30d: 0,
+        tvlUSD: 0,
+        tvlVariation30d: 0,
+        earnings30d: 0,
+        volume30d: 0,
+        token0Balance: 0,
+        token1Balance: 0,
+        updatedAt: "",
     },
     {
         name: "Uniswap BUSD-USDC Market Making 0.01%",
@@ -436,6 +483,14 @@ const poolData: Prisma.PoolCreateInput[] = [
             "Low impermanent loss expected as assets in the pool remain highly correlated and have a lower risk of price divergence.",
         ],
         defiLlamaId: "4bb8783d-9919-4a8e-980e-546401a67f63",
+        apy30d: 0,
+        tvlUSD: 0,
+        tvlVariation30d: 0,
+        earnings30d: 0,
+        volume30d: 0,
+        token0Balance: 0,
+        token1Balance: 0,
+        updatedAt: "",
     },
 ];
 
@@ -470,10 +525,46 @@ async function main() {
     }
     // Pools
     for (const p of poolData) {
+        const blockchain = getBlockchain(p.blockchain.connect?.id || 0);
+        const dateTimeNow = new Date().toISOString();
+        const [tvl, subgraph, llama] = await Promise.all([
+            web3Service.getPoolTVL({
+                blockchainId: p.blockchain.connect?.id || 0,
+                poolAddress: p.address,
+                token0Address: p.token0Address,
+                token1Address: p.token1Address,
+            }),
+            subgraphManage.getPoolSubgraph({
+                address: p.address,
+                endTime: getCurrentTimestampInSeconds(),
+                first: 30,
+                skip: 0,
+                subgraphUrl: blockchain.subgraphUrl,
+            }),
+            defiLlamaService.getPoolDefiLlama(p.defiLlamaId),
+        ]);
+
+        const poolData: Prisma.PoolCreateInput = {
+            ...p,
+            apy30d: getPoolAPY30d(llama),
+            tvlUSD: tvl.tvlUSD,
+            tvlVariation30d: getPoolTvlVariation30d(tvl.tvlUSD, llama),
+            earnings30d: getPoolEarnings30d(subgraph),
+            volume30d: getPoolVolume30d(subgraph),
+            token0Balance: tvl.token0Balance,
+            token1Balance: tvl.token1Balance,
+            updatedAt: dateTimeNow,
+        };
+
         const pool = await prisma.pool.upsert({
-            create: p,
-            update: p,
-            where: { name: p.name },
+            create: poolData,
+            update: poolData,
+            where: {
+                poolIdentifier: {
+                    address: p.address,
+                    blockchainId: p.blockchain.connect?.id || 0,
+                },
+            },
         });
         console.log(`Pool: ${pool.id} ${pool.name}`);
     }

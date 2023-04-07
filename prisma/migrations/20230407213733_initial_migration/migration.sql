@@ -67,12 +67,20 @@ CREATE TABLE "pools" (
     "yield_outlook_rating" TEXT NOT NULL,
     "yield_outlook_description" TEXT[],
     "defi_llama_id" TEXT NOT NULL,
+    "tvl_usd" DOUBLE PRECISION NOT NULL,
+    "tvl_variation_30d" DOUBLE PRECISION NOT NULL,
+    "token_0_balance" DOUBLE PRECISION NOT NULL,
+    "token_1_balance" DOUBLE PRECISION NOT NULL,
+    "apy_30d" DOUBLE PRECISION NOT NULL,
+    "earnings_30d" DOUBLE PRECISION NOT NULL,
+    "volume_30d" DOUBLE PRECISION NOT NULL,
+    "updated_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "pools_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "pools_name_key" ON "pools"("name");
+CREATE UNIQUE INDEX "pools_address_blockchain_id_key" ON "pools"("address", "blockchain_id");
 
 -- AddForeignKey
 ALTER TABLE "pools" ADD CONSTRAINT "pools_blockchain_id_fkey" FOREIGN KEY ("blockchain_id") REFERENCES "blockchains"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
