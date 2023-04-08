@@ -97,7 +97,8 @@ model Pool {
   apy30d                     Float      @map("apy_30d")
   earnings30d                Float      @map("earnings_30d")
   volume30d                  Float      @map("volume_30d")
-  updatedAt                  DateTime   @map("updated_at")
+  updatedAt                  DateTime   @updatedAt @map("updated_at")
+  llama                      Json
 
   @@unique([address, blockchainId], name: "poolIdentifier")
   @@map("pools")

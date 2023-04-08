@@ -75,6 +75,7 @@ CREATE TABLE "pools" (
     "earnings_30d" DOUBLE PRECISION NOT NULL,
     "volume_30d" DOUBLE PRECISION NOT NULL,
     "updated_at" TIMESTAMP(3) NOT NULL,
+    "llama" JSONB NOT NULL,
 
     CONSTRAINT "pools_pkey" PRIMARY KEY ("id")
 );

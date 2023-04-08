@@ -310,7 +310,7 @@ const poolData: Prisma.PoolCreateInput[] = [
         volume30d: 0,
         token0Balance: 0,
         token1Balance: 0,
-        updatedAt: "",
+        llama: "",
     },
     {
         name: "Uniswap USDC-WETH Market Making 0.05%",
@@ -346,7 +346,7 @@ const poolData: Prisma.PoolCreateInput[] = [
         volume30d: 0,
         token0Balance: 0,
         token1Balance: 0,
-        updatedAt: "",
+        llama: "",
     },
     {
         name: "Uniswap MATIC-WETH Market Making 0.3%",
@@ -382,7 +382,7 @@ const poolData: Prisma.PoolCreateInput[] = [
         volume30d: 0,
         token0Balance: 0,
         token1Balance: 0,
-        updatedAt: "",
+        llama: "",
     },
     {
         name: "Uniswap ETH-USDC Market Making 0.3%",
@@ -418,7 +418,7 @@ const poolData: Prisma.PoolCreateInput[] = [
         volume30d: 0,
         token0Balance: 0,
         token1Balance: 0,
-        updatedAt: "",
+        llama: "",
     },
     {
         name: "Uniswap DAI-USDT Market Making 0.05%",
@@ -454,7 +454,7 @@ const poolData: Prisma.PoolCreateInput[] = [
         volume30d: 0,
         token0Balance: 0,
         token1Balance: 0,
-        updatedAt: "",
+        llama: "",
     },
     {
         name: "Uniswap BUSD-USDC Market Making 0.01%",
@@ -490,7 +490,7 @@ const poolData: Prisma.PoolCreateInput[] = [
         volume30d: 0,
         token0Balance: 0,
         token1Balance: 0,
-        updatedAt: "",
+        llama: "",
     },
 ];
 
@@ -553,7 +553,7 @@ async function main() {
             volume30d: getPoolVolume30d(subgraph),
             token0Balance: tvl.token0Balance,
             token1Balance: tvl.token1Balance,
-            updatedAt: dateTimeNow,
+            llama: JSON.stringify(llama),
         };
 
         const pool = await prisma.pool.upsert({
