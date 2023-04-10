@@ -29,11 +29,15 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
                 },
             },
             orderBy: [{ id: "desc" }],
-            include: {
-                blockchain: true,
-                protocol: true,
-                token0: true,
-                token1: true,
+            select: {
+                name: true,
+                apy30d: true,
+                tvlUSD: true,
+                overallRiskRating: true,
+                protocol: { select: { name: true, imageUrl: true } },
+                blockchain: { select: { name: true, imageUrl: true } },
+                token0: { select: { symbol: true } },
+                token1: { select: { symbol: true } },
             },
         });
         return pools;
