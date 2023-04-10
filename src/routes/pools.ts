@@ -30,6 +30,7 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
             },
             orderBy: [{ id: "desc" }],
             select: {
+                id: true,
                 name: true,
                 apy30d: true,
                 tvlUSD: true,
