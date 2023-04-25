@@ -137,7 +137,7 @@ interface IGetPoolTVL {
     token1Address: string;
 }
 
-interface RGetPoolTVL {
+export interface RGetPoolTVL {
     tvlUSD: number;
     token0Balance: number;
     token1Balance: number;

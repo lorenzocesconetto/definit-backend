@@ -1,15 +1,14 @@
 import { Type } from "@sinclair/typebox";
 import { prisma } from "../providers/prisma";
 import { getBlockchain } from "../utils/getBlockchain";
-import { getPoolEarnings30d } from "../utils/getPoolEarnings30d";
 import { getPoolTvlVariation30d } from "../utils/getPoolTvlVariation30d";
-import { getPoolVolume30d } from "../utils/getPoolVolume30d";
 import { getPoolAPY30d } from "../utils/getPoolAPY30d";
 import { FastifyTypebox } from "./types";
-import { getCurrentTimestampInSeconds } from "../utils/getCurrentTimestamp";
-import { web3Service, defiLlamaService, subgraphManage } from "../services";
+import { web3Service, defiLlamaService } from "../services";
 import { Prisma } from "@prisma/client";
 import moment from "moment";
+import { processEconomicsState } from "../utils/processEconomicsState";
+import { composedService } from "../services/composed";
 
 const schema = {
     params: Type.Object({
@@ -21,12 +20,20 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
     fastify.get("/pools/best-risk-reward", async () => {
         const pools = await prisma.pool.findMany({
             where: {
-                name: {
-                    in: [
-                        "Uniswap BUSD-USDC Market Making 0.01%",
-                        "Uniswap DAI-USDT Market Making 0.05%",
-                    ],
-                },
+                OR: [
+                    {
+                        blockchainId: { equals: 1 },
+                        address: {
+                            equals: "0x5e35c4eba72470ee1177dcb14dddf4d9e6d915f4",
+                        },
+                    },
+                    {
+                        blockchainId: { equals: 42161 },
+                        address: {
+                            equals: "0x6387b0d5853184645cc9a77d6db133355d2eb4e4",
+                        },
+                    },
+                ],
             },
             orderBy: [{ id: "desc" }],
             select: {
@@ -74,32 +81,16 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
             return { ...pool, llama: JSON.parse(pool.llama as string) };
         }
         const blockchain = getBlockchain(pool.blockchainId);
-        const [tvl, subgraph, llama] = await Promise.all([
-            web3Service.getPoolTVL({
-                blockchainId: pool.blockchainId,
-                poolAddress: pool.address,
-                token0Address: pool.token0Address,
-                token1Address: pool.token1Address,
-            }),
-            subgraphManage.getPoolSubgraph({
-                address: pool.address,
-                endTime: getCurrentTimestampInSeconds(),
-                first: 30,
-                skip: 0,
-                subgraphUrl: blockchain.subgraphUrl,
-            }),
-            defiLlamaService.getPoolDefiLlama(pool.defiLlamaId),
-        ]);
-        const updatedPoolAttrs: Prisma.PoolUpdateInput = {
-            apy30d: getPoolAPY30d(llama),
-            tvlUSD: tvl.tvlUSD,
-            tvlVariation30d: getPoolTvlVariation30d(tvl.tvlUSD, llama),
-            earnings30d: getPoolEarnings30d(subgraph),
-            volume30d: getPoolVolume30d(subgraph),
-            token0Balance: tvl.token0Balance,
-            token1Balance: tvl.token1Balance,
-            llama: JSON.stringify(llama),
-        };
+        const [tvl, subgraph, llama] =
+            await composedService.getPoolStateEconomics(
+                pool,
+                blockchain.subgraphUrl
+            );
+        const updatedPoolAttrs: Prisma.PoolUpdateInput = processEconomicsState(
+            tvl,
+            subgraph,
+            llama
+        );
         await prisma.pool.update({
             data: updatedPoolAttrs,
             where: { id: pool.id },
@@ -107,8 +98,8 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
         return { ...pool, ...updatedPoolAttrs, llama };
     });
 
-    if (process.env.ENV === "dev")
-        // This endpoint is for development puposes only
+    if (process.env.ENV === "dev") {
+        // These endpoints are for development puposes only
         fastify.get("/pools/:id/llama", { schema }, async req => {
             const { id } = req.params;
             const pool = await prisma.pool.findUniqueOrThrow({
@@ -136,6 +127,7 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
             );
             return { apy30d, tvlVariation30d, data: llama };
         });
+    }
 }
 
 export { routes };

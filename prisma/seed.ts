@@ -4,7 +4,11 @@ import {
     ETHEREUM_BLOCKCHAIN,
     POLYGON_BLOCKCHAIN,
 } from "../src/utils/constants";
-import { defiLlamaService, subgraphManage, web3Service } from "../src/services";
+import {
+    defiLlamaService,
+    subgraphService,
+    web3Service,
+} from "../src/services";
 import { getPoolAPY30d } from "../src/utils/getPoolAPY30d";
 import { getCurrentTimestampInSeconds } from "../src/utils/getCurrentTimestamp";
 import { getPoolTvlVariation30d } from "../src/utils/getPoolTvlVariation30d";
@@ -19,7 +23,6 @@ const prisma = new PrismaClient();
 ///////////////////////////////////////////////////////
 const tokenData: Prisma.TokenCreateInput[] = [
     {
-        id: 1,
         name: "USDC",
         symbol: "USDC",
         strengthRating: "A",
@@ -33,7 +36,6 @@ const tokenData: Prisma.TokenCreateInput[] = [
         ],
     },
     {
-        id: 2,
         name: "Wrapped Ethereum",
         symbol: "WETH",
         strengthRating: "B",
@@ -47,7 +49,6 @@ const tokenData: Prisma.TokenCreateInput[] = [
         ],
     },
     {
-        id: 3,
         name: "Ether",
         symbol: "ETH",
         strengthRating: "A",
@@ -60,7 +61,6 @@ const tokenData: Prisma.TokenCreateInput[] = [
         ],
     },
     {
-        id: 4,
         name: "Matic",
         symbol: "MATIC",
         strengthRating: "A",
@@ -73,7 +73,6 @@ const tokenData: Prisma.TokenCreateInput[] = [
         ],
     },
     {
-        id: 5,
         name: "Dai Stablecoin",
         symbol: "DAI",
         strengthRating: "B",
@@ -87,7 +86,6 @@ const tokenData: Prisma.TokenCreateInput[] = [
         ],
     },
     {
-        id: 6,
         name: "Tether USD",
         symbol: "USDT",
         strengthRating: "C",
@@ -101,7 +99,6 @@ const tokenData: Prisma.TokenCreateInput[] = [
         ],
     },
     {
-        id: 7,
         name: "Binance USD",
         symbol: "BUSD",
         strengthRating: "B",
@@ -277,7 +274,9 @@ const protocolData: Prisma.ProtocolCreateInput[] = [
 // Example:         Uniswap USDC-ETH Market Making 0.05%
 const poolData: Prisma.PoolCreateInput[] = [
     {
-        name: "Uniswap USDC-ETH Market Making 0.05%",
+        exponentialId: "2d90c2f1-9278-46bb-83f0-029ab096910c",
+        assetStrengthRating: "B",
+        name: "Uniswap V3 USDC-ETH Market Making 0.05%",
         token0: { connect: { id: 1 } },
         token1: { connect: { id: 3 } },
         description:
@@ -313,7 +312,9 @@ const poolData: Prisma.PoolCreateInput[] = [
         llama: "",
     },
     {
-        name: "Uniswap USDC-WETH Market Making 0.05%",
+        exponentialId: "e7c7ebaa-7b1b-415b-ac95-a1a8cc88a4d5",
+        assetStrengthRating: "C",
+        name: "Uniswap V3 USDC-WETH Market Making 0.05%",
         description:
             "This pool facilitates trades between USDC and ETH. Your yield is generated from swap fees paid by traders when an exchange happens.",
         token0: { connect: { id: 1 } },
@@ -349,7 +350,9 @@ const poolData: Prisma.PoolCreateInput[] = [
         llama: "",
     },
     {
-        name: "Uniswap MATIC-WETH Market Making 0.3%",
+        exponentialId: "7a5bdbfd-9c8f-4fac-a2fa-fe87051a0a66",
+        assetStrengthRating: "C",
+        name: "Uniswap V3 MATIC-WETH Market Making 0.3%",
         token0: { connect: { id: 4 } },
         token1: { connect: { id: 2 } },
         description:
@@ -385,7 +388,9 @@ const poolData: Prisma.PoolCreateInput[] = [
         llama: "",
     },
     {
-        name: "Uniswap ETH-USDC Market Making 0.3%",
+        exponentialId: "e3ce0f8f-6e94-4a37-8448-76fbd86b8690",
+        assetStrengthRating: "C",
+        name: "Uniswap V3 ETH-USDC Market Making 0.3%",
         token0: { connect: { id: 3 } },
         token1: { connect: { id: 1 } },
         description:
@@ -421,7 +426,9 @@ const poolData: Prisma.PoolCreateInput[] = [
         llama: "",
     },
     {
-        name: "Uniswap DAI-USDT Market Making 0.05%",
+        exponentialId: "ba0ef14e-790e-4dd6-a483-4a1f06d4fcac",
+        assetStrengthRating: "D",
+        name: "Uniswap V3 DAI-USDT Market Making 0.05%",
         token0: { connect: { id: 5 } },
         token1: { connect: { id: 6 } },
         description:
@@ -457,7 +464,9 @@ const poolData: Prisma.PoolCreateInput[] = [
         llama: "",
     },
     {
-        name: "Uniswap BUSD-USDC Market Making 0.01%",
+        exponentialId: "65bc1dce-b70e-403d-a7b1-aefd91d87f7b",
+        assetStrengthRating: "B",
+        name: "Uniswap V3 BUSD-USDC Market Making 0.01%",
         token0: { connect: { id: 7 } },
         token1: { connect: { id: 1 } },
         description:
@@ -501,7 +510,7 @@ async function main() {
         const token = await prisma.token.upsert({
             create: t,
             update: t,
-            where: { id: t.id },
+            where: { name: t.name },
         });
         console.log(`Token: ${token.id} ${token.symbol}`);
     }
@@ -534,7 +543,7 @@ async function main() {
                 token0Address: p.token0Address,
                 token1Address: p.token1Address,
             }),
-            subgraphManage.getPoolSubgraph({
+            subgraphService.getPoolSubgraph({
                 address: p.address,
                 endTime: getCurrentTimestampInSeconds(),
                 first: 30,

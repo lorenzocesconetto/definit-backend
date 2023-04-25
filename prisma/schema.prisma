@@ -3,6 +3,14 @@
 
 // @TechDebt: Create a generic model so others can inherit from
 
+// TODOs:
+// Add token description
+// Add token parent linkage, e.g., weth -> eth
+// Create assets table (weth in polygon is different from weth in Arbitrum or Ethereum)
+// Add investable (bool) to Pool
+// Add is_active which sets whether we show it or not (at protocol, chain and pool level)
+// Add dependency risks, e.g., bridges
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -46,9 +54,9 @@ model Protocol {
 }
 
 model Token {
-  id                    Int      @id
-  name                  String
-  symbol                String
+  id                    Int      @id @default(autoincrement())
+  name                  String   @unique
+  symbol                String   @unique
   strengthRating        String   @map("strength_rating")
   strengthDescription   String[] @map("strength_description")
   volatilityRating      String   @map("volatility_rating") // @TechDebt: All ratings should be an Enum
@@ -61,6 +69,7 @@ model Token {
 
 model Pool {
   id                         Int        @id @default(autoincrement())
+  exponentialId              String     @map("exponential_id")
   name                       String
   description                String
   // Immutables
@@ -82,6 +91,8 @@ model Pool {
   overallRiskRating          String     @map("overall_risk_rating")
   fundamentalsRiskRating     String     @map("fundamentals_risk_rating")
   economicsRiskRating        String     @map("economics_risk_rating")
+  // Undelying Asset Risk
+  assetStrengthRating        String     @map("asset_strength_rating")
   // Impermanent Loss Risk
   impermanentLossRating      String     @map("impermanent_loss_rating") // @TechDebt: All ratings should be an Enum
   impermanentLossDescription String[]   @map("impermanent_loss_description")
@@ -97,8 +108,8 @@ model Pool {
   apy30d                     Float      @map("apy_30d")
   earnings30d                Float      @map("earnings_30d")
   volume30d                  Float      @map("volume_30d")
-  updatedAt                  DateTime   @updatedAt @map("updated_at")
   llama                      Json
+  updatedAt                  DateTime   @default(now()) @updatedAt @map("updated_at")
 
   @@unique([address, blockchainId], name: "poolIdentifier")
   @@map("pools")

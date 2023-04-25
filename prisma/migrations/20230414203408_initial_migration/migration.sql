@@ -33,7 +33,7 @@ CREATE TABLE "protocols" (
 
 -- CreateTable
 CREATE TABLE "tokens" (
-    "id" INTEGER NOT NULL,
+    "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "symbol" TEXT NOT NULL,
     "strength_rating" TEXT NOT NULL,
@@ -47,6 +47,7 @@ CREATE TABLE "tokens" (
 -- CreateTable
 CREATE TABLE "pools" (
     "id" SERIAL NOT NULL,
+    "exponential_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "address" TEXT NOT NULL,
@@ -62,6 +63,7 @@ CREATE TABLE "pools" (
     "overall_risk_rating" TEXT NOT NULL,
     "fundamentals_risk_rating" TEXT NOT NULL,
     "economics_risk_rating" TEXT NOT NULL,
+    "asset_strength_rating" TEXT NOT NULL,
     "impermanent_loss_rating" TEXT NOT NULL,
     "impermanent_loss_description" TEXT[],
     "yield_outlook_rating" TEXT NOT NULL,
@@ -74,11 +76,17 @@ CREATE TABLE "pools" (
     "apy_30d" DOUBLE PRECISION NOT NULL,
     "earnings_30d" DOUBLE PRECISION NOT NULL,
     "volume_30d" DOUBLE PRECISION NOT NULL,
-    "updated_at" TIMESTAMP(3) NOT NULL,
     "llama" JSONB NOT NULL,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "pools_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "tokens_name_key" ON "tokens"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "tokens_symbol_key" ON "tokens"("symbol");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "pools_address_blockchain_id_key" ON "pools"("address", "blockchain_id");

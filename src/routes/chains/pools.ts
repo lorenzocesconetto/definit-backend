@@ -6,7 +6,7 @@ import { getBlockchain } from "../../utils/getBlockchain";
 import { getCurrentTimestampInSeconds } from "../../utils/getCurrentTimestamp";
 import { FastifyTypebox } from "../types";
 import { abi } from "@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json";
-import { web3Service, subgraphManage } from "../../services";
+import { web3Service, subgraphService } from "../../services";
 
 const schema = {
     params: Type.Object({
@@ -48,14 +48,13 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
 
     fastify.get("/pools/:address/subgraph", { schema }, async req => {
         const blockchain = getBlockchain(req.params.blockchainId);
-        const data = await subgraphManage.getPoolSubgraph({
+        const data = await subgraphService.getPoolSubgraph({
             address: req.params.address,
             first: 30,
             skip: 0,
             subgraphUrl: blockchain.subgraphUrl,
             endTime: getCurrentTimestampInSeconds(),
         });
-
         return data;
     });
 
