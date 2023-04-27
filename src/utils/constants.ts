@@ -7,6 +7,7 @@ interface IBlockchain {
 const ETHEREUM_BLOCKCHAIN_ID = 1;
 const POLYGON_BLOCKCHAIN_ID = 137;
 const ARBITRUM_BLOCKCHAIN_ID = 42161;
+const OPTIMISM_BLOCKCHAIN_ID = 10;
 
 const ETHEREUM_SUBGRAPH_URL =
     "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3";
@@ -15,7 +16,8 @@ const POLYGON_SUBGRAPH_URL =
 // "https://api.thegraph.com/subgraphs/name/messari/uniswap-v3-polygon";
 const ARBITRUM_SUBGRAPH_URL =
     "https://api.thegraph.com/subgraphs/name/ianlapham/uniswap-arbitrum-one";
-
+const OPTIMISM_SUBGRAPH_URL =
+    "https://thegraph.com/hosted-service/subgraph/ianlapham/uniswap-optimism";
 const ETHEREUM_BLOCKCHAIN: IBlockchain = {
     coinGeckoId: "ethereum",
     blockchainId: ETHEREUM_BLOCKCHAIN_ID,
@@ -31,6 +33,11 @@ const ARBITRUM_BLOCKCHAIN: IBlockchain = {
     blockchainId: ARBITRUM_BLOCKCHAIN_ID,
     subgraphUrl: ARBITRUM_SUBGRAPH_URL,
 };
+const OPTIMISM_BLOCKCHAIN: IBlockchain = {
+    coinGeckoId: "optimistic-ethereum",
+    blockchainId: OPTIMISM_BLOCKCHAIN_ID,
+    subgraphUrl: OPTIMISM_SUBGRAPH_URL,
+};
 
 // Covalent API
 const COVALENT_API_KEY = "feb5d1862de148278e7f1100222";
@@ -41,6 +48,7 @@ export {
     ETHEREUM_BLOCKCHAIN,
     POLYGON_BLOCKCHAIN,
     ARBITRUM_BLOCKCHAIN,
+    OPTIMISM_BLOCKCHAIN,
     COVALENT_API_KEY,
     COVALENT_BASE_URL,
 };

@@ -3,6 +3,7 @@ import {
     ARBITRUM_BLOCKCHAIN,
     ETHEREUM_BLOCKCHAIN,
     POLYGON_BLOCKCHAIN,
+    OPTIMISM_BLOCKCHAIN,
 } from "../src/utils/constants";
 import {
     defiLlamaService,
@@ -176,6 +177,26 @@ const blockchainData: Prisma.BlockchainCreateInput[] = [
         ],
         uniswapNativeTokenContract:
             "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+    },
+    {
+        id: OPTIMISM_BLOCKCHAIN.blockchainId,
+        name: "Optimism",
+        nativeTokenName: "Ether",
+        nativeTokenSymbol: "ETH",
+        imageUrl: "https://cryptologos.cc/logos/optimism-ethereum-op-logo.png",
+        designRating: "A",
+        designDescription: [
+            "Highly decentralized with over 600k miners securing the chain, making it resilient to censorship and attacks",
+            "Validator block rewards are moderately sustainable, but could compromise long-term viability",
+            "Chain has low total value invested",
+            "Optimism is an Ethereum Layer 2 that makes Ethereum more scalable while building on top of Ethereum's economic security and decentralization",
+        ],
+        reliabilityRating: "A",
+        reliabilityDescription: [
+            "Chain had no reported downtime in the last 12 months",
+        ],
+        uniswapNativeTokenContract:
+            "0x4200000000000000000000000000000000000006",
     },
 ];
 
@@ -535,7 +556,6 @@ async function main() {
     // Pools
     for (const p of poolData) {
         const blockchain = getBlockchain(p.blockchain.connect?.id || 0);
-        const dateTimeNow = new Date().toISOString();
         const [tvl, subgraph, llama] = await Promise.all([
             web3Service.getPoolTVL({
                 blockchainId: p.blockchain.connect?.id || 0,

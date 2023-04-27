@@ -65,7 +65,7 @@ async function routes(fastify: FastifyTypebox) {
         }
         const pools = await prisma.pool.findMany({
             where: searchFilters,
-            take: 20,
+            take: 30,
             select: {
                 id: true,
                 address: true,

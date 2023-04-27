@@ -4,6 +4,7 @@ const checkEnvVars = () => {
         "INFURA_ETHEREUM_URL",
         "INFURA_POLYGON_URL",
         "INFURA_ARBITRUM_URL",
+        "INFURA_OPTIMISM_URL",
         "ETHERSCAN_API_KEY",
         "ENV",
     ];

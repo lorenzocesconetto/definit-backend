@@ -15,25 +15,28 @@ function build(): FastifyInstance {
     checkEnvVars(); // Checks if environment variables are properly set
     const _server = Fastify({
         trustProxy: true,
-        logger: process.env.ENV == "prod",
+        logger: process.env.ENV === "prod",
     }); // Must trust proxy for Google Cloud Run
 
     const server = _server.withTypeProvider<TypeBoxTypeProvider>();
 
-    // Redirect to https, but only if in production
-    if (process.env.ENV == "prod")
+    // Only if in production:
+    // 1. Redirect to https
+    // 2. Add cors policy
+    if (process.env.ENV === "prod") {
         server.addHook("preHandler", redirectToHttps);
 
-    server.register(cors, {
-        origin: [
-            "https://definit.xyz",
-            "https://www.definit.xyz",
-            "https://staging.definit.xyz",
-            "https://app.definit.xyz",
-            "https://localhost:3000",
-            "http://localhost:3000",
-        ],
-    });
+        server.register(cors, {
+            origin: [
+                "https://definit.xyz",
+                "https://www.definit.xyz",
+                "https://staging.definit.xyz",
+                "https://app.definit.xyz",
+                "https://localhost:3000",
+                "http://localhost:3000",
+            ],
+        });
+    }
 
     server.get("/", {}, () => {
         return { status: "Healthy" };
