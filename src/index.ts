@@ -20,6 +20,10 @@ function build(): FastifyInstance {
 
     const server = _server.withTypeProvider<TypeBoxTypeProvider>();
 
+    if (process.env.ENV === "dev")
+        server.register(cors, {
+            origin: ["https://localhost:3000", "http://localhost:3000"],
+        });
     // Only if in production:
     // 1. Redirect to https
     // 2. Add cors policy
@@ -32,8 +36,6 @@ function build(): FastifyInstance {
                 "https://www.definit.xyz",
                 "https://staging.definit.xyz",
                 "https://app.definit.xyz",
-                "https://localhost:3000",
-                "http://localhost:3000",
             ],
         });
     }

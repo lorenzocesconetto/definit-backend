@@ -71,7 +71,7 @@ async function routes(fastify: FastifyTypebox) {
                 address: true,
                 name: true,
                 fee: true,
-                blockchain: { select: { imageUrl: true } },
+                blockchain: { select: { imageUrl: true, name: true } },
                 protocol: { select: { name: true } },
                 overallRiskRating: true,
                 tvlUSD: true,

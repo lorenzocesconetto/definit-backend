@@ -55,11 +55,31 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
         const { id } = req.params;
         const pool = await prisma.pool.findUniqueOrThrow({
             where: { id },
-            include: {
+            select: {
                 blockchain: true,
                 protocol: true,
                 token0: true,
                 token1: true,
+                address: true,
+                apy30d: true,
+                assetStrengthRating: true,
+                blockchainId: true,
+                description: true,
+                earnings30d: true,
+                economicsRiskRating: true,
+                fee: true,
+                fundamentalsRiskRating: true,
+                impermanentLossDescription: true,
+                id: true,
+                impermanentLossRating: true,
+                llama: true,
+                name: true,
+                tvlUSD: true,
+                tvlVariation30d: true,
+                yieldOutlookDescription: true,
+                yieldOutlookRating: true,
+                volume30d: true,
+                overallRiskRating: true,
             },
         });
         return { ...pool, llama: JSON.parse(pool.llama as string) };
@@ -69,11 +89,35 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
         const { id } = req.params;
         const pool = await prisma.pool.findUniqueOrThrow({
             where: { id },
-            include: {
+            select: {
                 blockchain: true,
                 protocol: true,
                 token0: true,
                 token1: true,
+                id: true,
+                name: true,
+                address: true,
+                description: true,
+                blockchainId: true,
+                fee: true,
+                tvlUSD: true,
+                apy30d: true,
+                earnings30d: true,
+                volume30d: true,
+                assetStrengthRating: true,
+                economicsRiskRating: true,
+                fundamentalsRiskRating: true,
+                impermanentLossDescription: true,
+                impermanentLossRating: true,
+                llama: true,
+                tvlVariation30d: true,
+                yieldOutlookDescription: true,
+                yieldOutlookRating: true,
+                overallRiskRating: true,
+                updatedAt: true,
+                token0Address: true,
+                token1Address: true,
+                defiLlamaId: true,
             },
         });
         // If pool was updated less than 5 minutes ago, just return what's already in the database

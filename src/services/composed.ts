@@ -2,14 +2,15 @@ import { getCurrentTimestampInSeconds } from "../utils/getCurrentTimestamp";
 import { defiLlamaService } from "./defiLlama";
 import { subgraphService } from "./subgraph";
 import { web3Service } from "./web3";
-import { Pool, Protocol, Blockchain, Token } from "@prisma/client";
+// import { Pool, Protocol, Blockchain } from "@prisma/client";
 
-type TPool = Pool & {
-    protocol: Protocol;
-    blockchain: Blockchain;
-    token0: Token;
-    token1: Token;
-};
+interface TPool {
+    blockchainId: number;
+    address: string;
+    token0Address: string;
+    token1Address: string;
+    defiLlamaId: string;
+}
 
 const getPoolStateEconomics = async (pool: TPool, subgraphUrl: string) => {
     const response = await Promise.all([
