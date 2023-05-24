@@ -63,24 +63,41 @@ async function routes(fastify: FastifyTypebox) {
             const ids = blockchainIds.split(",").map(b => parseInt(b));
             searchFilters.blockchainId.in = ids;
         }
-        const pools = await prisma.pool.findMany({
-            where: searchFilters,
-            take: 30,
-            select: {
-                id: true,
-                address: true,
-                name: true,
-                fee: true,
-                blockchain: { select: { imageUrl: true, name: true } },
-                protocol: { select: { name: true } },
-                overallRiskRating: true,
-                tvlUSD: true,
-                apy30d: true,
-                token0: { select: { symbol: true } },
-                token1: { select: { symbol: true } },
-            },
-        });
-        return pools;
+        const [staking, pools] = await Promise.all([
+            prisma.staking.findMany({
+                where: searchFilters,
+                take: 30,
+                select: {
+                    id: true,
+                    address: true,
+                    name: true,
+                    blockchain: { select: { imageUrl: true, name: true } },
+                    protocol: { select: { name: true, id: true } },
+                    overallRiskRating: true,
+                    tvlUSD: true,
+                    apy30d: true,
+                    token0: { select: { symbol: true } },
+                },
+            }),
+            prisma.pool.findMany({
+                where: searchFilters,
+                take: 30,
+                select: {
+                    id: true,
+                    address: true,
+                    name: true,
+                    fee: true,
+                    blockchain: { select: { imageUrl: true, name: true } },
+                    protocol: { select: { name: true, id: true } },
+                    overallRiskRating: true,
+                    tvlUSD: true,
+                    apy30d: true,
+                    token0: { select: { symbol: true } },
+                    token1: { select: { symbol: true } },
+                },
+            }),
+        ]);
+        return [...staking, ...pools];
     });
 }
 

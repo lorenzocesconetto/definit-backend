@@ -18,37 +18,58 @@ const schema = {
 
 async function routes(fastify: FastifyTypebox): Promise<void> {
     fastify.get("/pools/best-risk-reward", async () => {
-        const pools = await prisma.pool.findMany({
-            where: {
-                OR: [
-                    {
-                        blockchainId: { equals: 1 },
-                        address: {
-                            equals: "0x5e35c4eba72470ee1177dcb14dddf4d9e6d915f4",
+        const [pools, staking] = await Promise.all([
+            prisma.pool.findMany({
+                where: {
+                    OR: [
+                        {
+                            blockchainId: { equals: 1 },
+                            address: {
+                                equals: "0x5e35c4eba72470ee1177dcb14dddf4d9e6d915f4",
+                            },
                         },
-                    },
-                    {
-                        blockchainId: { equals: 42161 },
-                        address: {
-                            equals: "0x6387b0d5853184645cc9a77d6db133355d2eb4e4",
+                        {
+                            blockchainId: { equals: 42161 },
+                            address: {
+                                equals: "0x6387b0d5853184645cc9a77d6db133355d2eb4e4",
+                            },
                         },
+                    ],
+                },
+                orderBy: [{ id: "desc" }],
+                select: {
+                    id: true,
+                    name: true,
+                    apy30d: true,
+                    tvlUSD: true,
+                    overallRiskRating: true,
+                    protocol: { select: { name: true, imageUrl: true } },
+                    blockchain: { select: { name: true, imageUrl: true } },
+                    token0: { select: { symbol: true } },
+                    token1: { select: { symbol: true } },
+                },
+            }),
+            prisma.staking.findFirst({
+                where: {
+                    blockchainId: { equals: 1 },
+                    address: {
+                        equals: "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
                     },
-                ],
-            },
-            orderBy: [{ id: "desc" }],
-            select: {
-                id: true,
-                name: true,
-                apy30d: true,
-                tvlUSD: true,
-                overallRiskRating: true,
-                protocol: { select: { name: true, imageUrl: true } },
-                blockchain: { select: { name: true, imageUrl: true } },
-                token0: { select: { symbol: true } },
-                token1: { select: { symbol: true } },
-            },
-        });
-        return pools;
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    apy30d: true,
+                    tvlUSD: true,
+                    overallRiskRating: true,
+                    protocol: { select: { name: true, imageUrl: true } },
+                    blockchain: { select: { name: true, imageUrl: true } },
+                    token0: { select: { symbol: true } },
+                },
+            }),
+        ]);
+
+        return [...pools, staking];
     });
 
     fastify.get("/pools/:id", { schema }, async req => {

@@ -27,7 +27,7 @@ npx prisma init --datasource-provider postgresql
 Create a new SQL migration file + run the SQL migration file against the database. Use `--name` flag to give the migration a descriptive name:
 
 ```
-npx prisma migrate dev --name "initial migration"
+npx prisma migrate dev --name "initial migration" --skip-seed
 ```
 
 The `--create-only` command allows you to create a migration without applying it:
@@ -45,7 +45,7 @@ npx prisma migrate deploy
 Reset database. Please notice that **all data is lost**, and migrations are applied from scratch. This is only intended for **development purposes**:
 
 ```
-npx prisma migrate reset
+npx prisma migrate reset --skip-seed
 ```
 
 ## 3. Data

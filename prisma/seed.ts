@@ -286,6 +286,80 @@ const protocolData: Prisma.ProtocolCreateInput[] = [
             "Low voting power concentration reduces risk",
         ],
     },
+    {
+        id: 4,
+        name: "Lido",
+        imageUrl: "https://avatars.githubusercontent.com/u/68384064?s=200&v=4",
+        codeQualityRating: "A",
+        codeQualityDescription: [
+            "Code reviewed by several experienced auditors including MixBytes and Quantstamp",
+            "Public team promotes accountability",
+            "No documented protocol hacks since launch",
+        ],
+        collateralizationLeverageRating: "A",
+        collateralizationLeverageDescription: ["No exposure to leverage"],
+        designRating: "A",
+        designDescription: [
+            "No concerns identified",
+            // eslint-disable-next-line quotes
+            'Lido will "delegate" your asset to a network of 21 independent operators that will process blockchain transactions. Neither Lido nor the operators can get a hold of your funds',
+        ],
+        maturityRating: "A",
+        maturityDescription: [
+            "Core protocol launched in 2020; maturity over two years minimizes technical risk as smart contracts are amongst the most battle-tested",
+            "Top 1% by total value locked reduces risk",
+            "Decentralized governance increases transparency",
+            "Low voting power concentration reduces risk",
+        ],
+    },
+    {
+        id: 5,
+        name: "Rocket Pool",
+        imageUrl:
+            "https://raw.githubusercontent.com/rocket-pool/rocketpool/master/images/logo.png?raw=true",
+        codeQualityRating: "A",
+        codeQualityDescription: [
+            "Code reviewed by several experienced auditors including Sigma Prime, Trail of Bits and ConsenSys",
+            "Public team promotes accountability",
+            "No documented protocol hacks since launch",
+        ],
+        collateralizationLeverageRating: "A",
+        collateralizationLeverageDescription: ["No exposure to leverage"],
+        designRating: "A",
+        designDescription: ["No concerns identified"],
+        maturityRating: "B",
+        maturityDescription: [
+            "Core protocol launched in 2021; maturity over a year reduces technical risk as smart contracts are moderately battle-tested",
+            "Top 5% by total value locked reduces risk",
+            "Decentralized governance increases transparency",
+            "The core contracts are controlled by a strong 8/15 multisig consisting of well-known entities (4 signers from Rocket Pool); however, we note that the protocol could still potentially rug pull users (i.e. infinite mint of rETH) if it were to collude with 4 additional signers",
+            "Low voting power concentration reduces risk",
+        ],
+    },
+    {
+        id: 6,
+        name: "Coinbase Staking",
+        imageUrl:
+            "https://seeklogo.com/images/C/coinbase-coin-logo-C86F46D7B8-seeklogo.com.png",
+        codeQualityRating: "B",
+        codeQualityDescription: [
+            "Code reviewed by at least one experienced auditor; OpenZeppelin audited in August 2022",
+            "Public team promotes accountability",
+            "No documented protocol hacks since launch",
+        ],
+        collateralizationLeverageRating: "A",
+        collateralizationLeverageDescription: ["No exposure to leverage"],
+        designRating: "A",
+        designDescription: ["No concerns identified"],
+        maturityRating: "B",
+        maturityDescription: [
+            "Core protocol launched in 2018; maturity over two years minimizes technical risk as smart contracts are amongst the most battle-tested",
+            "Top 1% by total value locked reduces risk",
+            "Centralized governance increases risk",
+            "At least one critical governance issue documented",
+            "No governance token and/or contracts are fully immutable",
+        ],
+    },
 ];
 
 ///////////////////////////////////////////////////////
@@ -524,6 +598,39 @@ const poolData: Prisma.PoolCreateInput[] = [
     },
 ];
 
+const stakingData: Prisma.StakingCreateInput[] = [
+    {
+        exponentialId: "bf2ee737-848b-4e3e-8125-f75cc8e4de53",
+        assetStrengthRating: "A",
+        name: "Lido ETH Staking",
+        token0: { connect: { id: 3 } },
+        description:
+            "This pool allows you to lend your ETH to proof of stake validators who process blockchain transactions. Your yield is generated from newly minted ETH granted to validators and blockchain transaction fees.",
+        address: "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
+        blockchain: { connect: { id: ETHEREUM_BLOCKCHAIN.blockchainId } },
+        protocol: { connect: { id: 4 } },
+        token0Address: "0xae7ab96520de3a18e5e111b5eaab095312d7fe84",
+        overallRiskRating: "B",
+        fundamentalsRiskRating: "B",
+        economicsRiskRating: "B",
+        yieldOutlookRating: "B",
+        yieldOutlookDescription: [
+            "Yield outlook is stable to positive as pool earnings are generated from organic user demand of protocol services",
+            "Moderate TVL means your yield declines slightly for incremental deposits into the pool",
+        ],
+        impermanentLossRating: "B",
+        impermanentLossDescription: [
+            "Low impermanent loss expected as assets in the pool remain highly correlated and have a lower risk of price divergence.",
+        ],
+        defiLlamaId: "747c1d2a-c668-4682-b9f9-296708a3dd90",
+        apy30d: 0,
+        tvlUSD: 0,
+        tvlVariation30d: 0,
+        token0Balance: 0,
+        llama: "",
+    },
+];
+
 async function main() {
     console.log("Start seeding database...");
     // Tokens
@@ -552,6 +659,20 @@ async function main() {
             where: { id: p.id },
         });
         console.log(`Protocol: ${protocol.id} ${protocol.name}`);
+    }
+    // Staking
+    for (const s of stakingData) {
+        const staking = await prisma.staking.upsert({
+            create: s,
+            update: s,
+            where: {
+                uniqueIdentifier: {
+                    address: s.address,
+                    blockchainId: s.blockchain.connect?.id || 0,
+                },
+            },
+        });
+        console.log(`Staking: ${staking.id} ${staking.name}`);
     }
     // Pools
     for (const p of poolData) {
