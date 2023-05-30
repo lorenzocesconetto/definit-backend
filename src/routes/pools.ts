@@ -9,6 +9,7 @@ import { Prisma } from "@prisma/client";
 import moment from "moment";
 import { processEconomicsState } from "../utils/processEconomicsState";
 import { composedService } from "../services/composed";
+import { getPoolTvlFromLlama } from "../utils/getPoolTvlFromLlama";
 
 const schema = {
     params: Type.Object({
@@ -106,6 +107,36 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
         return { ...pool, llama: JSON.parse(pool.llama as string) };
     });
 
+    fastify.get("/staking/:id", { schema }, async req => {
+        const { id } = req.params;
+        const pool = await prisma.staking.findUniqueOrThrow({
+            where: { id },
+            select: {
+                blockchain: true,
+                protocol: true,
+                token0: true,
+                address: true,
+                apy30d: true,
+                assetStrengthRating: true,
+                blockchainId: true,
+                description: true,
+                economicsRiskRating: true,
+                fundamentalsRiskRating: true,
+                impermanentLossDescription: true,
+                id: true,
+                impermanentLossRating: true,
+                llama: true,
+                name: true,
+                tvlUSD: true,
+                tvlVariation30d: true,
+                yieldOutlookDescription: true,
+                yieldOutlookRating: true,
+                overallRiskRating: true,
+            },
+        });
+        return { ...pool, llama: JSON.parse(pool.llama as string) };
+    });
+
     fastify.get("/pools/:id/refresh", { schema }, async req => {
         const { id } = req.params;
         const pool = await prisma.pool.findUniqueOrThrow({
@@ -156,6 +187,57 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
             subgraph,
             llama
         );
+        await prisma.pool.update({
+            data: updatedPoolAttrs,
+            where: { id: pool.id },
+        });
+        return { ...pool, ...updatedPoolAttrs, llama };
+    });
+
+    fastify.get("/staking/:id/refresh", { schema }, async req => {
+        const { id } = req.params;
+        const pool = await prisma.pool.findUniqueOrThrow({
+            where: { id },
+            select: {
+                blockchain: true,
+                protocol: true,
+                token0: true,
+                id: true,
+                name: true,
+                address: true,
+                description: true,
+                blockchainId: true,
+                tvlUSD: true,
+                apy30d: true,
+                earnings30d: true,
+                volume30d: true,
+                assetStrengthRating: true,
+                economicsRiskRating: true,
+                fundamentalsRiskRating: true,
+                impermanentLossDescription: true,
+                impermanentLossRating: true,
+                llama: true,
+                tvlVariation30d: true,
+                yieldOutlookDescription: true,
+                yieldOutlookRating: true,
+                overallRiskRating: true,
+                updatedAt: true,
+                token0Address: true,
+                defiLlamaId: true,
+            },
+        });
+        // If pool was updated less than 5 minutes ago, just return what's already in the database
+        if (moment(pool.updatedAt).add(5, "minutes") >= moment(new Date())) {
+            return { ...pool, llama: JSON.parse(pool.llama as string) };
+        }
+        const llama = await defiLlamaService.getPoolDefiLlama(pool.defiLlamaId);
+        const tvlUSD = getPoolTvlFromLlama(llama);
+        const updatedPoolAttrs: Prisma.PoolUpdateInput = {
+            apy30d: getPoolAPY30d(llama),
+            tvlUSD: tvlUSD,
+            tvlVariation30d: getPoolTvlVariation30d(tvlUSD, llama),
+            llama: JSON.stringify(llama),
+        };
         await prisma.pool.update({
             data: updatedPoolAttrs,
             where: { id: pool.id },
