@@ -196,7 +196,7 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
 
     fastify.get("/staking/:id/refresh", { schema }, async req => {
         const { id } = req.params;
-        const pool = await prisma.pool.findUniqueOrThrow({
+        const pool = await prisma.staking.findUniqueOrThrow({
             where: { id },
             select: {
                 blockchain: true,
@@ -209,8 +209,6 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
                 blockchainId: true,
                 tvlUSD: true,
                 apy30d: true,
-                earnings30d: true,
-                volume30d: true,
                 assetStrengthRating: true,
                 economicsRiskRating: true,
                 fundamentalsRiskRating: true,
