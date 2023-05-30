@@ -236,7 +236,7 @@ async function routes(fastify: FastifyTypebox): Promise<void> {
             tvlVariation30d: getPoolTvlVariation30d(tvlUSD, llama),
             llama: JSON.stringify(llama),
         };
-        await prisma.pool.update({
+        await prisma.staking.update({
             data: updatedPoolAttrs,
             where: { id: pool.id },
         });
